@@ -15,7 +15,8 @@ public enum ErrorCode {
     EMAIL_INVALID(1006, "Incorrect email format!", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1007, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You do not have permission!", HttpStatus.FORBIDDEN),
-    ROLE_NOT_FOUND(1009, "Role not found!", HttpStatus.NOT_FOUND)
+    ROLE_NOT_FOUND(1009, "Role not found!", HttpStatus.NOT_FOUND),
+    HOTEL_NOT_FOUND(1010, "Hotel not found!", HttpStatus.NOT_FOUND)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

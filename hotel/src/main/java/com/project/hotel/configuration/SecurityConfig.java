@@ -39,7 +39,6 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/users/get-all").permitAll()
                                 .anyRequest().authenticated());
 
         //Cấu hình phần này để xác thực token được gửi ở Header

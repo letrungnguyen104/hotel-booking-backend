@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +15,7 @@ public class Role {
     @Id
     @Column(name = "role_name")
     String roleName;
+
     @Column(name = "description")
     String description;
 }

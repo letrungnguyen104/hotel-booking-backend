@@ -7,16 +7,13 @@ import com.project.hotel.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class})
 public interface UserMapper {
     User toUser(CreateUserRequest createUserRequest);
 
-    @Mapping(target = "roles", source = "role")
+    @Mapping(target = "roles", source = "roles")
     UserResponse toUserResponse(User user);
     List<UserResponse> toListUserResponse(List<User> listUser);
 }

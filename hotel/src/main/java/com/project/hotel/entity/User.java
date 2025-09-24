@@ -17,25 +17,38 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "id")
     int id;
-    @Column(name = "username")
+
+    @Column(name = "username", nullable = false, unique = true)
     String username;
-    @Column(name = "email")
+
+    @Column(name = "email", nullable = false, unique = true)
     String email;
-    @Column(name = "password")
+
+    @Column(name = "password", nullable = false)
     String password;
+
     @Column(name = "fullname")
-    String fullname;
+    String fullName;
+
     @Column(name = "phone_number")
     String phoneNumber;
+
     @Column(name = "status")
     int status;
+
     @Column(name = "created_at")
     LocalDateTime createdAt;
+
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
 
-    @ManyToMany
-    Set<Role> role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_name")
+    )
+    Set<Role> roles;
 }

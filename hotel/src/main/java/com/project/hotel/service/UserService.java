@@ -9,7 +9,6 @@ import com.project.hotel.exception.ErrorCode;
 import com.project.hotel.mapper.UserMapper;
 import com.project.hotel.repository.RoleRepository;
 import com.project.hotel.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -40,7 +39,7 @@ public class UserService{
         Role role = roleRepository.findById("USER").orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        user.setRole(roles);
+        user.setRoles(roles);
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
