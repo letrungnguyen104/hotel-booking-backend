@@ -45,4 +45,10 @@ public class UserController {
         return ResponseEntity.of(userRepository.findById(id));
     }
 
+    @GetMapping("get-user/{id}")
+    public ApiResponse<UserResponse> getUserById(@PathVariable("id") int id) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(id))
+                .build();
+    }
 }

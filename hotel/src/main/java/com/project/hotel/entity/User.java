@@ -44,6 +44,9 @@ public class User {
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
 
+    @Column(name = "img_path")
+    String imagePath;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
