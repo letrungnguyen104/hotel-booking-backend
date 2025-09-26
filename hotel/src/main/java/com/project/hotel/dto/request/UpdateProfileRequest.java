@@ -1,6 +1,5 @@
 package com.project.hotel.dto.request;
 
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,9 +8,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateUserRequest {
-    String username;
+public class UpdateProfileRequest {
     String email;
-    @Size(min = 8, message = "PASSWORD_INVALID")
-    String password;
+    String fullName;
+    String phoneNumber;
+    String imgPath;
 }

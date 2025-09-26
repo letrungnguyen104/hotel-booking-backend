@@ -31,7 +31,10 @@ public class UserService{
 
     public UserResponse createUser(CreateUserRequest request){
         if(userRepository.existsByUsername(request.getUsername())){
-            throw new AppException(ErrorCode.USER_EXISTED);
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
+        }
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
         User user = userMapper.toUser(request);
         user.setStatus(1);
@@ -47,5 +50,10 @@ public class UserService{
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(userMapper::toUserResponse).toList();
+    }
+
+    public UserResponse getUser(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toUserResponse(user);
     }
 }
