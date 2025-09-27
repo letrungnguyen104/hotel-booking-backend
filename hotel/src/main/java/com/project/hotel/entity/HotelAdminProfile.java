@@ -39,5 +39,5 @@ public class HotelAdminProfile {
     String idCardOrPassport;
 
     @Column(name = "verified")
-    Boolean verified;
+    int verified;
 }

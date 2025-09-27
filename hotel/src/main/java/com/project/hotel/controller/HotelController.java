@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hotel.dto.request.CreateHotelRequest;
 import com.project.hotel.dto.request.UpdateHotelRequest;
 import com.project.hotel.dto.response.ApiResponse;
+import com.project.hotel.dto.response.HotelAdminResponse;
 import com.project.hotel.dto.response.HotelResponse;
 import com.project.hotel.service.HotelService;
 import lombok.RequiredArgsConstructor;
@@ -80,4 +81,5 @@ public class HotelController {
                 .message("Delete Successfully!")
                 .build();
     }
+
 }

@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +35,7 @@ public class HotelService {
     UserRepository userRepository;
     FileStorageService fileStorageService;
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public HotelResponse createHotel(CreateHotelRequest request, List<MultipartFile> files) {
         System.out.println(request.getOwnerId());
         User owner = userRepository.findById(request.getOwnerId())
@@ -103,6 +105,7 @@ public class HotelService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public HotelResponse updateHotel(int id, UpdateHotelRequest request, List<MultipartFile> files) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
@@ -150,6 +153,7 @@ public class HotelService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public HotelResponse patchHotel(int id, UpdateHotelRequest request, List<MultipartFile> files) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
@@ -195,6 +199,7 @@ public class HotelService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public void deleteHotel(int id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
