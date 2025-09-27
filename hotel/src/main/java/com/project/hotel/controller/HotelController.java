@@ -3,6 +3,7 @@ package com.project.hotel.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hotel.dto.request.CreateHotelRequest;
+import com.project.hotel.dto.request.UpdateHotelRequest;
 import com.project.hotel.dto.response.ApiResponse;
 import com.project.hotel.dto.response.HotelResponse;
 import com.project.hotel.service.HotelService;
@@ -50,7 +51,7 @@ public class HotelController {
             @RequestPart("request") String requestJson,
             @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) throws JsonProcessingException {
-        CreateHotelRequest request = new ObjectMapper().readValue(requestJson, CreateHotelRequest.class);
+        UpdateHotelRequest request = new ObjectMapper().readValue(requestJson, UpdateHotelRequest.class);
         return ApiResponse.<HotelResponse>builder()
                 .result(hotelService.updateHotel(id, request, files))
                 .build();
@@ -62,9 +63,9 @@ public class HotelController {
             @RequestPart(value = "request", required = false) String requestJson,
             @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) throws JsonProcessingException {
-        CreateHotelRequest request = null;
+        UpdateHotelRequest request = null;
         if (requestJson != null) {
-            request = new ObjectMapper().readValue(requestJson, CreateHotelRequest.class);
+            request = new ObjectMapper().readValue(requestJson, UpdateHotelRequest.class);
         }
         return ApiResponse.<HotelResponse>builder()
                 .result(hotelService.patchHotel(id, request, files))

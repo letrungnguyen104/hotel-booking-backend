@@ -17,5 +17,5 @@ public class CreateHotelRequest {
     String country;
     String phone;
     String description;
-    HotelStatus status;
+//    HotelStatus status;
 }

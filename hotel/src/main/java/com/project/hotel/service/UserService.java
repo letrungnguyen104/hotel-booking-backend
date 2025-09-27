@@ -12,7 +12,9 @@ import com.project.hotel.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService{
     UserRepository userRepository;
     UserMapper userMapper;
@@ -53,7 +56,20 @@ public class UserService{
     }
 
     public UserResponse getUser(int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        return userMapper.toUserResponse(user);
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username: {}", authentication.getName());
+        User userCheck = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED));
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return userMapper.toUserResponse(
+                    userRepository.findById(userId)
+                            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED))
+            );
+        }
+        if (!(userCheck.getId() == userId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+        return userMapper.toUserResponse(userCheck);
     }
 }

@@ -1,6 +1,7 @@
 package com.project.hotel.service;
 
 import com.project.hotel.dto.request.CreateHotelRequest;
+import com.project.hotel.dto.request.UpdateHotelRequest;
 import com.project.hotel.dto.response.HotelResponse;
 import com.project.hotel.dto.response.OwnerResponse;
 import com.project.hotel.entity.Hotel;
@@ -46,7 +47,7 @@ public class HotelService {
                 .country(request.getCountry())
                 .phone(request.getPhone())
                 .description(request.getDescription())
-                .status(request.getStatus())
+                .status(HotelStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .build();
         hotelRepository.save(hotel);
@@ -102,7 +103,7 @@ public class HotelService {
     }
 
     @Transactional
-    public HotelResponse updateHotel(int id, CreateHotelRequest request, List<MultipartFile> files) {
+    public HotelResponse updateHotel(int id, UpdateHotelRequest request, List<MultipartFile> files) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
 
@@ -149,7 +150,7 @@ public class HotelService {
     }
 
     @Transactional
-    public HotelResponse patchHotel(int id, CreateHotelRequest request, List<MultipartFile> files) {
+    public HotelResponse patchHotel(int id, UpdateHotelRequest request, List<MultipartFile> files) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
         if (request != null) {
