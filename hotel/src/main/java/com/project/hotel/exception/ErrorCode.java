@@ -19,6 +19,7 @@ public enum ErrorCode {
     HOTEL_NOT_FOUND(1010, "Hotel not found!", HttpStatus.NOT_FOUND),
     USERNAME_EXISTED(1011, "Username already in use!", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1012, "Email already in use!", HttpStatus.BAD_REQUEST),
+    HOTEL_ADMIN_NOT_FOUND(1013, "Hotel Admin not found!", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
