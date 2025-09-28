@@ -7,12 +7,15 @@ import com.project.hotel.dto.request.UpdateHotelRequest;
 import com.project.hotel.dto.response.ApiResponse;
 import com.project.hotel.dto.response.HotelAdminResponse;
 import com.project.hotel.dto.response.HotelResponse;
+import com.project.hotel.dto.response.HotelSearchResponse;
 import com.project.hotel.service.HotelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -73,12 +76,23 @@ public class HotelController {
                 .build();
     }
 
-
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteHotel(@PathVariable int id) {
         hotelService.deleteHotel(id);
         return ApiResponse.<Void>builder()
                 .message("Delete Successfully!")
+                .build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<List<HotelSearchResponse>> searchHotels(
+            @RequestParam String city,
+            @RequestParam int guests,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut
+    ) {
+        return ApiResponse.<List<HotelSearchResponse>>builder()
+                .result(hotelService.searchHotels(city, guests, checkIn, checkOut))
                 .build();
     }
 

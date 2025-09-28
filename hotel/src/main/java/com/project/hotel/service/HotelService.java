@@ -3,6 +3,7 @@ package com.project.hotel.service;
 import com.project.hotel.dto.request.CreateHotelRequest;
 import com.project.hotel.dto.request.UpdateHotelRequest;
 import com.project.hotel.dto.response.HotelResponse;
+import com.project.hotel.dto.response.HotelSearchResponse;
 import com.project.hotel.dto.response.OwnerResponse;
 import com.project.hotel.entity.Hotel;
 import com.project.hotel.entity.HotelImage;
@@ -21,10 +22,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -225,5 +228,21 @@ public class HotelService {
                 .createdAt(hotel.getCreatedAt())
                 .images(imageUrls)
                 .build();
+    }
+
+    public List<HotelSearchResponse> searchHotels(String city, int guests, LocalDate checkIn, LocalDate checkOut) {
+        List<Object[]> results = hotelRepository.searchHotels(city, guests, checkIn, checkOut);
+        return results.stream().map(row -> HotelSearchResponse.builder()
+                .id((Integer) row[0])
+                .name((String) row[1])
+                .city((String) row[2])
+                .country((String) row[3])
+                .amenities((String) row[4])
+                .oldPrice(row[5] != null ? ((Number) row[5]).doubleValue() : null)
+                .newPrice(row[6] != null ? ((Number) row[6]).doubleValue() : null)
+                .stars(row[7] != null ? ((Number) row[7]).doubleValue() : 0.0)
+                .reviewCount(row[8] != null ? ((Number) row[8]).longValue() : 0L)
+                .build()
+        ).collect(Collectors.toList());
     }
 }
