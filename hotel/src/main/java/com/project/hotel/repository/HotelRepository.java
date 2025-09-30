@@ -74,4 +74,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
     """, nativeQuery = true)
     List<Object[]> findTop5HotelsByCity(@Param("city") String city);
 
+    @Query("SELECT h FROM Hotel h WHERE h.owner.id = :ownerId")
+    List<Hotel> findByOwnerId(@Param("ownerId") int ownerId);
+
+
 }
