@@ -4,6 +4,7 @@ import com.project.hotel.dto.request.CreateHotelRequest;
 import com.project.hotel.dto.request.UpdateHotelRequest;
 import com.project.hotel.dto.response.HotelResponse;
 import com.project.hotel.dto.response.HotelSearchResponse;
+import com.project.hotel.dto.response.HotelTopResponse;
 import com.project.hotel.dto.response.OwnerResponse;
 import com.project.hotel.entity.Hotel;
 import com.project.hotel.entity.HotelImage;
@@ -93,7 +94,7 @@ public class HotelService {
     public List<HotelResponse> getAllHotels() {
         List<Hotel> hotels = hotelRepository.findAll()
                 .stream()
-                .filter(h -> h.getStatus() != HotelStatus.CLOSED)
+                .filter(h -> (h.getStatus() != HotelStatus.CLOSED))
                 .toList();
 
         List<HotelResponse> responses = new ArrayList<>();
@@ -244,5 +245,24 @@ public class HotelService {
                 .reviewCount(row[8] != null ? ((Number) row[8]).longValue() : 0L)
                 .build()
         ).collect(Collectors.toList());
+    }
+
+    public List<HotelTopResponse> getTopHotelsByCity(String city) {
+        List<Object[]> results = hotelRepository.findTop5HotelsByCity(city);
+
+        return results.stream().map(row -> {
+            Double rating = row[4] != null ? ((Number) row[4]).doubleValue() : 0.0;
+
+            return HotelTopResponse.builder()
+                    .id((Integer) row[0])
+                    .name((String) row[1])
+                    .city((String) row[2])
+                    .price(row[3] != null ? ((Number) row[3]).doubleValue() : null)
+                    .rating(rating)
+                    .reviewCount(row[5] != null ? ((Number) row[5]).longValue() : 0L)
+                    .image((String) row[6])
+                    .score(rating * 2)
+                    .build();
+        }).toList();
     }
 }

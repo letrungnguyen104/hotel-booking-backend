@@ -52,4 +52,26 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
             @Param("checkOut") LocalDate checkOut
     );
 
+
+    @Query(value = """
+    SELECT TOP 5 
+           h.id AS id,
+           h.name AS name,
+           h.city AS city,
+           MIN(rt.price_per_night) AS price,
+           ISNULL(AVG(r.rating), 0) AS rating,
+           COUNT(r.id) AS reviewCount,
+           (SELECT TOP 1 hi.url 
+            FROM hotel_image hi 
+            WHERE hi.hotel_id = h.id AND hi.is_main = 1) AS mainImage
+    FROM hotel h
+    LEFT JOIN room_type rt ON h.id = rt.hotel_id
+    LEFT JOIN review r ON h.id = r.hotel_id
+    WHERE h.city = :city
+      AND h.status = 'ACTIVE'
+    GROUP BY h.id, h.name, h.city
+    ORDER BY AVG(r.rating) DESC, h.id ASC
+    """, nativeQuery = true)
+    List<Object[]> findTop5HotelsByCity(@Param("city") String city);
+
 }
