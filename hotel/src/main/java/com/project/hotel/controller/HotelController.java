@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hotel.dto.request.CreateHotelRequest;
 import com.project.hotel.dto.request.UpdateHotelRequest;
-import com.project.hotel.dto.response.ApiResponse;
-import com.project.hotel.dto.response.HotelAdminResponse;
-import com.project.hotel.dto.response.HotelResponse;
-import com.project.hotel.dto.response.HotelSearchResponse;
+import com.project.hotel.dto.response.*;
 import com.project.hotel.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -95,5 +92,13 @@ public class HotelController {
                 .result(hotelService.searchHotels(city, guests, checkIn, checkOut))
                 .build();
     }
+
+    @GetMapping("/top-hotels")
+    public ApiResponse<List<HotelTopResponse>> getTopHotels(@RequestParam String city) {
+        return ApiResponse.<List<HotelTopResponse>>builder()
+                .result(hotelService.getTopHotelsByCity(city))
+                .build();
+    }
+
 
 }

@@ -34,9 +34,6 @@ public class RoomType {
     @Column(name = "price_per_night")
     Double pricePerNight;
 
-    @Column(name = "amenities")
-    String amenities;
-
     @Column(name = "status")
     String status;
 
@@ -45,4 +42,12 @@ public class RoomType {
 
     @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<RoomImage> images;
+
+    @ManyToMany
+    @JoinTable(
+            name = "room_type_amenity",
+            joinColumns = @JoinColumn(name = "room_type_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id")
+    )
+    Set<Amenity> amenities;
 }

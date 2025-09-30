@@ -1,0 +1,29 @@
+<configuration>
+    <property name="LOG_PATH" value="${user.dir}/logging" />
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/hotel.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/hotel-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Log cho code của bạn -->
+    <logger name="com.project.hotel" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- Giảm log của Spring, Hibernate, Tomcat -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.apache.catalina" level="WARN"/>
+
+    <!-- Root logger: WARN trở lên (chỉ log warning, error chung) -->
+    <root level="WARN">
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

@@ -67,6 +67,7 @@ public class AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated){
+            log.warn("User " + request.getUsername() + " login failed!");
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
