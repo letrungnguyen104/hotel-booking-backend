@@ -265,4 +265,18 @@ public class HotelService {
                     .build();
         }).toList();
     }
+
+    public List<HotelResponse> getHotelsByOwner(int ownerId) {
+        List<Hotel> hotels = hotelRepository.findByOwnerId(ownerId);
+
+        List<HotelResponse> responses = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            List<String> imageUrls = hotelImageRepository.findByHotel(hotel)
+                    .stream()
+                    .map(HotelImage::getUrl)
+                    .toList();
+            responses.add(mapToResponse(hotel, imageUrls));
+        }
+        return responses;
+    }
 }

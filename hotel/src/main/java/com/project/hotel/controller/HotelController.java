@@ -32,7 +32,7 @@ public class HotelController {
                 .build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-by-id/{id}")
     public ApiResponse<HotelResponse> getHotel(@PathVariable int id) {
         return ApiResponse.<HotelResponse>builder()
                 .result(hotelService.getHotel(id))
@@ -46,7 +46,7 @@ public class HotelController {
                 .build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<HotelResponse> updateHotel(
             @PathVariable int id,
             @RequestPart("request") String requestJson,
@@ -58,7 +58,7 @@ public class HotelController {
                 .build();
     }
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<HotelResponse> patchHotel(
             @PathVariable int id,
             @RequestPart(value = "request", required = false) String requestJson,
@@ -73,7 +73,7 @@ public class HotelController {
                 .build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ApiResponse<Void> deleteHotel(@PathVariable int id) {
         hotelService.deleteHotel(id);
         return ApiResponse.<Void>builder()
@@ -100,5 +100,11 @@ public class HotelController {
                 .build();
     }
 
+    @GetMapping("/owner/{ownerId}")
+    public ApiResponse<List<HotelResponse>> getHotelsByOwner(@PathVariable int ownerId) {
+        return ApiResponse.<List<HotelResponse>>builder()
+                .result(hotelService.getHotelsByOwner(ownerId))
+                .build();
+    }
 
 }

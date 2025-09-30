@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/hotels/search", "/hotels/top-hotels", "/hotels", "/hotels/**", "/hotels/top-hotels/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/hotels/search", "/hotels/top-hotels", "/hotels/get-by-id/**", "/hotels/top-hotels/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/uploads/*").permitAll()
                                 .anyRequest().authenticated());
 
