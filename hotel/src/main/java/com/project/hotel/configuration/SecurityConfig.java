@@ -28,7 +28,8 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINT = {"/users/register", "/auth/token", "/auth/introspect"};
+    private final String[] PUBLIC_ENDPOINT = {"/users/register",
+            "/auth/token", "/auth/introspect", "/users/pre-register", "/users/verify-register", "/api/auth/send-code", "/api/auth/verity-code"};
 
     @Value("${jwt.signerKey}")
     private String signerKey;

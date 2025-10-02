@@ -1,0 +1,270 @@
+2025-10-02 19:16:00 INFO  com.project.hotel.HotelApplication - Starting HotelApplication using Java 17.0.12 with PID 15788 (D:\SoftTech\Project\main-project\backend\hotel\target\classes started by ACER in D:\SoftTech\Project\main-project\backend\hotel)
+2025-10-02 19:16:00 INFO  com.project.hotel.HotelApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-02 19:16:09 WARN  org.hibernate.orm.deprecation - HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-02 19:16:18 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-02 19:16:19 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 29 mappings in 'requestMappingHandlerMapping'
+2025-10-02 19:16:20 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /uploads/**] in 'resourceHandlerMapping'
+2025-10-02 19:16:21 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-10-02 19:16:21 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-10-02 19:16:21 INFO  com.project.hotel.HotelApplication - Started HotelApplication in 21.517 seconds (process running for 31.726)
+2025-10-02 19:16:24 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3f891db7
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@33ba718d
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-10-02 19:16:24 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ha%20Noi", parameters={masked}
+2025-10-02 19:16:24 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 19:16:24 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 19:16:24 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=4, name=Blue Sea Hotel Updated, cit (truncated)...]
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/2f05a3c3-6220-4f01-bda2-ca132f6da939_grasshopper-4671635.jpg", parameters={}
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a8e11f05-b577-4ef2-9f0f-6509dc0adb45_snail-4373800.jpg", parameters={}
+2025-10-02 19:16:24 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 19:16:24 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:16:24 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:16:27 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Da%20Nang", parameters={masked}
+2025-10-02 19:16:27 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 19:16:27 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 19:16:27 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=1, name=Blue Sea Hotel, city=Da Nan (truncated)...]
+2025-10-02 19:16:27 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:16:27 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/6c2d5d41-ab47-4560-b4bb-5446b10f4479_grasshopper-4671635.jpg", parameters={}
+2025-10-02 19:16:27 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/219c75fd-83cd-4467-9e05-24ed413ba8d7_snail-4373800.jpg", parameters={}
+2025-10-02 19:16:27 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 19:16:27 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 19:16:28 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:16:28 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:16:28 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ho%20Chi%20Minh", parameters={masked}
+2025-10-02 19:16:28 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 19:16:28 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 19:16:28 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=2, name=Blue Sea Hotel, city=Ho Chi (truncated)...]
+2025-10-02 19:16:28 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:16:28 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a34267ae-4a77-445b-bff2-4dd72f77b2f9_grasshopper-4671635.jpg", parameters={}
+2025-10-02 19:16:28 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 19:16:28 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:56:34 INFO  com.project.hotel.HotelApplication - Starting HotelApplication using Java 17.0.12 with PID 9224 (D:\SoftTech\Project\main-project\backend\hotel\target\classes started by ACER in D:\SoftTech\Project\main-project\backend\hotel)
+2025-10-02 19:56:34 INFO  com.project.hotel.HotelApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-02 19:56:38 WARN  org.hibernate.orm.deprecation - HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-02 19:56:44 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-02 19:56:45 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 30 mappings in 'requestMappingHandlerMapping'
+2025-10-02 19:56:45 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /uploads/**] in 'resourceHandlerMapping'
+2025-10-02 19:56:45 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-10-02 19:56:45 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-10-02 19:56:46 INFO  com.project.hotel.HotelApplication - Started HotelApplication in 12.623 seconds (process running for 13.059)
+2025-10-02 19:56:49 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-10-02 19:56:49 DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-10-02 19:56:49 DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-10-02 19:56:49 DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-10-02 19:56:49 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@4ab4e333
+2025-10-02 19:56:49 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@46e5be54
+2025-10-02 19:56:49 DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-10-02 19:56:49 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2025-10-02 19:56:49 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 19:56:49 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 19:56:49 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=testverify, email=letrungnguyen104@gmail.com, password=12345678)]
+2025-10-02 19:56:53 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 19:56:53 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=Verification code sent to letrungnguyen104@gmail.com, result=null)]
+2025-10-02 19:56:53 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:58:05 INFO  com.project.hotel.HotelApplication - Starting HotelApplication using Java 17.0.12 with PID 20484 (D:\SoftTech\Project\main-project\backend\hotel\target\classes started by ACER in D:\SoftTech\Project\main-project\backend\hotel)
+2025-10-02 19:58:05 INFO  com.project.hotel.HotelApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-02 19:58:11 WARN  org.hibernate.orm.deprecation - HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-02 19:58:17 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-02 19:58:17 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 30 mappings in 'requestMappingHandlerMapping'
+2025-10-02 19:58:17 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /uploads/**] in 'resourceHandlerMapping'
+2025-10-02 19:58:18 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-10-02 19:58:18 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-10-02 19:58:18 INFO  com.project.hotel.HotelApplication - Started HotelApplication in 13.601 seconds (process running for 14.085)
+2025-10-02 19:58:21 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-10-02 19:58:21 DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-10-02 19:58:21 DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-10-02 19:58:21 DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-10-02 19:58:21 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@5d07db4a
+2025-10-02 19:58:21 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@25956970
+2025-10-02 19:58:21 DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-10-02 19:58:21 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2025-10-02 19:58:21 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 19:58:21 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 19:58:21 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=testverify, email=letrungnguyen104@gmail.com, password=12345678)]
+2025-10-02 19:58:26 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 19:58:26 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=Verification code sent to letrungnguyen104@gmail.com, result=null)]
+2025-10-02 19:58:26 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:58:40 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/verify-register", parameters={}
+2025-10-02 19:58:40 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#verifyRegister(VerifyRegisterRequest)
+2025-10-02 19:58:40 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [VerifyRegisterRequest(email=letrungnguyen104@gmail.com, code=4F7A65)]
+2025-10-02 19:58:41 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 19:58:41 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=Register successfully!, result=UserResponse(id=13, username=testverif (truncated)...]
+2025-10-02 19:58:41 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:59:20 DEBUG o.s.web.servlet.DispatcherServlet - POST "/auth/token", parameters={}
+2025-10-02 19:59:20 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.AuthenticationController#authenticate(AuthenticationRequest)
+2025-10-02 19:59:20 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [AuthenticationRequest(username=testverify, password=12345678)]
+2025-10-02 19:59:20 INFO  c.p.h.c.AuthenticationController - User testverify login to system!
+2025-10-02 19:59:20 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 19:59:20 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=AuthenticationResponse(token=eyJhbGciOiJIUzUxMiJ9.eyJzdW (truncated)...]
+2025-10-02 19:59:20 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 19:59:20 DEBUG o.s.web.servlet.DispatcherServlet - GET "/users/get-user/13", parameters={}
+2025-10-02 19:59:20 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#getUserById(int)
+2025-10-02 19:59:20 INFO  c.project.hotel.service.UserService - Username: testverify
+2025-10-02 19:59:21 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 19:59:21 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=UserResponse(id=13, username=testverify, email=letrungng (truncated)...]
+2025-10-02 19:59:21 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:10:19 DEBUG o.s.web.servlet.DispatcherServlet - GET "/users/get-user/13", parameters={}
+2025-10-02 20:10:19 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#getUserById(int)
+2025-10-02 20:10:19 INFO  c.project.hotel.service.UserService - Username: testverify
+2025-10-02 20:10:19 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:10:19 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=UserResponse(id=13, username=testverify, email=letrungng (truncated)...]
+2025-10-02 20:10:19 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:11:59 DEBUG o.s.web.servlet.DispatcherServlet - GET "/users/get-user/13", parameters={}
+2025-10-02 20:11:59 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#getUserById(int)
+2025-10-02 20:11:59 INFO  c.project.hotel.service.UserService - Username: testverify
+2025-10-02 20:11:59 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:11:59 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=UserResponse(id=13, username=testverify, email=letrungng (truncated)...]
+2025-10-02 20:11:59 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:12:02 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 20:12:02 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 20:12:02 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=user, email=socolla1004@gmail.com, password=12345678)]
+2025-10-02 20:12:02 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.project.hotel.exception.GlobalExceptionHandle#handlingAppException(AppException)
+2025-10-02 20:12:02 DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 20:12:02 DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiResponse(code=1011, message=Username already in use!, result=null)]
+2025-10-02 20:12:02 WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.project.hotel.exception.AppException: Username already in use!]
+2025-10-02 20:12:02 DEBUG o.s.web.servlet.DispatcherServlet - Completed 400 BAD_REQUEST
+2025-10-02 20:12:46 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ha%20Noi", parameters={masked}
+2025-10-02 20:12:46 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 20:12:46 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:12:46 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=4, name=Blue Sea Hotel Updated, cit (truncated)...]
+2025-10-02 20:12:46 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:12:47 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/2f05a3c3-6220-4f01-bda2-ca132f6da939_grasshopper-4671635.jpg", parameters={}
+2025-10-02 20:12:47 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a8e11f05-b577-4ef2-9f0f-6509dc0adb45_snail-4373800.jpg", parameters={}
+2025-10-02 20:12:47 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:12:47 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:12:47 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:12:47 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ha%20Noi", parameters={masked}
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - GET "/users/get-user/13", parameters={}
+2025-10-02 20:12:51 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 20:12:51 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#getUserById(int)
+2025-10-02 20:12:51 INFO  c.project.hotel.service.UserService - Username: testverify
+2025-10-02 20:12:51 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:12:51 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=4, name=Blue Sea Hotel Updated, cit (truncated)...]
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:12:51 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:12:51 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=UserResponse(id=13, username=testverify, email=letrungng (truncated)...]
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/2f05a3c3-6220-4f01-bda2-ca132f6da939_grasshopper-4671635.jpg", parameters={}
+2025-10-02 20:12:51 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a8e11f05-b577-4ef2-9f0f-6509dc0adb45_snail-4373800.jpg", parameters={}
+2025-10-02 20:12:51 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:12:51 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:13:57 DEBUG o.s.web.servlet.DispatcherServlet - GET "/users/get-user/13", parameters={}
+2025-10-02 20:13:57 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#getUserById(int)
+2025-10-02 20:13:57 INFO  c.project.hotel.service.UserService - Username: testverify
+2025-10-02 20:13:57 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ha%20Noi", parameters={masked}
+2025-10-02 20:13:57 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 20:13:57 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:13:57 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=UserResponse(id=13, username=testverify, email=letrungng (truncated)...]
+2025-10-02 20:13:57 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:13:57 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:13:57 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=4, name=Blue Sea Hotel Updated, cit (truncated)...]
+2025-10-02 20:13:57 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:13:59 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a8e11f05-b577-4ef2-9f0f-6509dc0adb45_snail-4373800.jpg", parameters={}
+2025-10-02 20:13:59 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/2f05a3c3-6220-4f01-bda2-ca132f6da939_grasshopper-4671635.jpg", parameters={}
+2025-10-02 20:13:59 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:13:59 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:13:59 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:13:59 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:14:15 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ha%20Noi", parameters={masked}
+2025-10-02 20:14:15 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 20:14:15 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:14:15 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=4, name=Blue Sea Hotel Updated, cit (truncated)...]
+2025-10-02 20:14:15 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:14:17 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/2f05a3c3-6220-4f01-bda2-ca132f6da939_grasshopper-4671635.jpg", parameters={}
+2025-10-02 20:14:17 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:14:17 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a8e11f05-b577-4ef2-9f0f-6509dc0adb45_snail-4373800.jpg", parameters={}
+2025-10-02 20:14:17 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:14:17 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:14:17 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:14:23 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ha%20Noi", parameters={masked}
+2025-10-02 20:14:23 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 20:14:23 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:14:23 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=4, name=Blue Sea Hotel Updated, cit (truncated)...]
+2025-10-02 20:14:23 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:14:24 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/2f05a3c3-6220-4f01-bda2-ca132f6da939_grasshopper-4671635.jpg", parameters={}
+2025-10-02 20:14:24 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:14:24 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a8e11f05-b577-4ef2-9f0f-6509dc0adb45_snail-4373800.jpg", parameters={}
+2025-10-02 20:14:24 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:14:24 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:14:24 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:14:47 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 20:14:47 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 20:14:47 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=socolla, email=socolla1004@gmail.com, password=12345678)]
+2025-10-02 20:14:51 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 20:14:51 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=Verification code sent to socolla1004@gmail.com, result=null)]
+2025-10-02 20:14:51 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:15:57 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 20:15:57 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 20:15:57 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=user, email=socolla1004@gmail.com, password=12345678)]
+2025-10-02 20:15:57 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.project.hotel.exception.GlobalExceptionHandle#handlingAppException(AppException)
+2025-10-02 20:15:57 DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 20:15:57 DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiResponse(code=1011, message=Username already in use!, result=null)]
+2025-10-02 20:15:57 WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.project.hotel.exception.AppException: Username already in use!]
+2025-10-02 20:15:57 DEBUG o.s.web.servlet.DispatcherServlet - Completed 400 BAD_REQUEST
+2025-10-02 20:17:50 DEBUG o.s.web.servlet.DispatcherServlet - GET "/hotels/top-hotels?city=Ha%20Noi", parameters={masked}
+2025-10-02 20:17:50 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.HotelController#getTopHotels(String)
+2025-10-02 20:17:50 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-10-02 20:17:50 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=null, result=[HotelTopResponse(id=4, name=Blue Sea Hotel Updated, cit (truncated)...]
+2025-10-02 20:17:50 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:17:51 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/2f05a3c3-6220-4f01-bda2-ca132f6da939_grasshopper-4671635.jpg", parameters={}
+2025-10-02 20:17:51 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:17:51 DEBUG o.s.web.servlet.DispatcherServlet - GET "/uploads/a8e11f05-b577-4ef2-9f0f-6509dc0adb45_snail-4373800.jpg", parameters={}
+2025-10-02 20:17:51 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [URL [file:D:/SoftTech/Project/main-project/backend/hotel/uploads/]]
+2025-10-02 20:17:51 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:17:51 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:18:03 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 20:18:03 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 20:18:03 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=user, email=socolla1004@gmail.com, password=12345678)]
+2025-10-02 20:18:03 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.project.hotel.exception.GlobalExceptionHandle#handlingAppException(AppException)
+2025-10-02 20:18:03 DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 20:18:03 DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiResponse(code=1011, message=Username already in use!, result=null)]
+2025-10-02 20:18:03 WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.project.hotel.exception.AppException: Username already in use!]
+2025-10-02 20:18:03 DEBUG o.s.web.servlet.DispatcherServlet - Completed 400 BAD_REQUEST
+2025-10-02 20:18:14 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 20:18:14 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 20:18:14 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=socolla, email=socolla1004@gmail.com, password=12345678)]
+2025-10-02 20:18:17 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 20:18:17 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=Verification code sent to socolla1004@gmail.com, result=null)]
+2025-10-02 20:18:17 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-10-02 20:18:39 INFO  com.project.hotel.HotelApplication - Starting HotelApplication using Java 17.0.12 with PID 1112 (D:\SoftTech\Project\main-project\backend\hotel\target\classes started by ACER in D:\SoftTech\Project\main-project\backend\hotel)
+2025-10-02 20:18:39 INFO  com.project.hotel.HotelApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-02 20:18:44 WARN  org.hibernate.orm.deprecation - HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-02 20:18:50 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-02 20:18:50 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 30 mappings in 'requestMappingHandlerMapping'
+2025-10-02 20:18:51 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /uploads/**] in 'resourceHandlerMapping'
+2025-10-02 20:18:51 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-10-02 20:18:51 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-10-02 20:18:52 INFO  com.project.hotel.HotelApplication - Started HotelApplication in 13.26 seconds (process running for 13.753)
+2025-10-02 20:19:50 INFO  com.project.hotel.HotelApplication - Starting HotelApplication using Java 17.0.12 with PID 16176 (D:\SoftTech\Project\main-project\backend\hotel\target\classes started by ACER in D:\SoftTech\Project\main-project\backend\hotel)
+2025-10-02 20:19:50 INFO  com.project.hotel.HotelApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-02 20:19:55 WARN  org.hibernate.orm.deprecation - HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-02 20:20:01 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-02 20:20:01 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 30 mappings in 'requestMappingHandlerMapping'
+2025-10-02 20:20:01 DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /uploads/**] in 'resourceHandlerMapping'
+2025-10-02 20:20:02 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-10-02 20:20:02 DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-10-02 20:20:02 INFO  com.project.hotel.HotelApplication - Started HotelApplication in 12.633 seconds (process running for 13.07)
+2025-10-02 20:20:16 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-10-02 20:20:16 DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-10-02 20:20:16 DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-10-02 20:20:16 DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-10-02 20:20:16 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@7103faeb
+2025-10-02 20:20:16 DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@6715fa96
+2025-10-02 20:20:16 DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-10-02 20:20:16 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-10-02 20:20:16 DEBUG o.s.web.servlet.DispatcherServlet - POST "/users/pre-register", parameters={}
+2025-10-02 20:20:16 DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.project.hotel.controller.UserController#preRegister(CreateUserRequest)
+2025-10-02 20:20:16 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [CreateUserRequest(username=socolla, email=socolla1004@gmail.com, password=12345678)]
+2025-10-02 20:20:19 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json] and supported [application/json, application/*+json]
+2025-10-02 20:20:19 DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ApiResponse(code=1001, message=Verification code sent to socolla1004@gmail.com, result=null)]
+2025-10-02 20:20:20 DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
