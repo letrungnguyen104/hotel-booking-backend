@@ -1,9 +1,11 @@
 package com.project.hotel.configuration;
 
+import com.project.hotel.entity.Amenity;
 import com.project.hotel.entity.Role;
 import com.project.hotel.entity.User;
 import com.project.hotel.exception.AppException;
 import com.project.hotel.exception.ErrorCode;
+import com.project.hotel.repository.AmenityRepository;
 import com.project.hotel.repository.RoleRepository;
 import com.project.hotel.repository.UserRepository;
 import lombok.AccessLevel;
@@ -16,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -25,6 +28,9 @@ import java.util.Set;
 public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
+    AmenityRepository amenityRepository;
+
+
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository){
         return args -> {
@@ -41,6 +47,21 @@ public class ApplicationInitConfig {
                         .build();
                 userRepository.save(user);
                 log.warn("Admin user has been created with default password: admin, please change it!");
+            }
+        };
+    }
+    @Bean
+    ApplicationRunner amenityInitializer() {
+        return args -> {
+            if (amenityRepository.count() == 0) {
+                List<String> defaultAmenities = List.of(
+                        "WiFi", "Air Conditioning", "Swimming Pool",
+                        "Parking", "Breakfast included", "Gym", "TV", "Mini Bar"
+                );
+                defaultAmenities.forEach(name -> {
+                    amenityRepository.save(Amenity.builder().name(name).build());
+                });
+                log.info("Default amenities initialized!");
             }
         };
     }
