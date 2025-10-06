@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "room_image")
-public class RoomImage {
+public class RoomTypeImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;

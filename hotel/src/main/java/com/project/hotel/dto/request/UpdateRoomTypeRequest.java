@@ -2,7 +2,6 @@ package com.project.hotel.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.util.List;
 
 @Data
@@ -10,8 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateRoomTypeRequest {
-    int hotelId;
+public class UpdateRoomTypeRequest {
     String name;
     String description;
     int capacity;

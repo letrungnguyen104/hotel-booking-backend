@@ -1,9 +1,12 @@
 package com.project.hotel.entity;
 
+import com.project.hotel.enums.RoomTypeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -34,14 +37,15 @@ public class RoomType {
     @Column(name = "price_per_night")
     Double pricePerNight;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    String status;
+    RoomTypeStatus status;
 
     @OneToMany(mappedBy = "roomType")
     Set<Room> rooms;
 
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<RoomImage> images;
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    List<RoomTypeImage> images = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -49,5 +53,5 @@ public class RoomType {
             joinColumns = @JoinColumn(name = "room_type_id"),
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
-    Set<Amenity> amenities;
+    List<Amenity> amenities = new ArrayList<>();
 }
