@@ -23,4 +23,6 @@ public class HotelResponse {
     String status;
     LocalDateTime createdAt;
     List<String> images;
+    Double rating;
+    Long reviewCount;
 }

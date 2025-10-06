@@ -1,6 +1,7 @@
 package com.project.hotel.repository;
 
 import com.project.hotel.entity.Hotel;
+import com.project.hotel.enums.HotelStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -74,8 +75,22 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
     """, nativeQuery = true)
     List<Object[]> findTop5HotelsByCity(@Param("city") String city);
 
-    @Query("SELECT h FROM Hotel h WHERE h.owner.id = :ownerId")
-    List<Hotel> findByOwnerId(@Param("ownerId") int ownerId);
+    @Query("""
+    SELECT h, COALESCE(AVG(r.rating), 0), COUNT(r.id)
+    FROM Hotel h
+    LEFT JOIN Review r ON r.hotel.id = h.id
+    WHERE h.owner.id = :ownerId
+    GROUP BY h
+    """)
+    List<Object[]> findHotelsByOwnerWithRating(@Param("ownerId") int ownerId);
 
+    @Query("""
+    SELECT h, COALESCE(AVG(r.rating), 0), COUNT(r.id)
+    FROM Hotel h
+    LEFT JOIN Review r ON r.hotel.id = h.id
+    WHERE h.owner.id = :ownerId AND h.status = :status
+    GROUP BY h
+    """)
+    List<Object[]> findByOwnerIdAndStatus(@Param("ownerId") int ownerId, @Param("status") HotelStatus status);
 
 }

@@ -266,17 +266,53 @@ public class HotelService {
         }).toList();
     }
 
-    public List<HotelResponse> getHotelsByOwner(int ownerId) {
-        List<Hotel> hotels = hotelRepository.findByOwnerId(ownerId);
+    public List<HotelResponse> getHotelsByOwner(int ownerId, String status) {
+        List<Object[]> results;
+
+        if (status != null && !status.isEmpty()) {
+            results = hotelRepository.findByOwnerIdAndStatus(ownerId, HotelStatus.valueOf(status));
+        } else {
+            results = hotelRepository.findHotelsByOwnerWithRating(ownerId);
+        }
 
         List<HotelResponse> responses = new ArrayList<>();
-        for (Hotel hotel : hotels) {
+
+        for (Object[] row : results) {
+            Hotel hotel = (Hotel) row[0];
+            double rating = ((Number) row[1]).doubleValue();
+            long reviewCount = ((Number) row[2]).longValue();
+
             List<String> imageUrls = hotelImageRepository.findByHotel(hotel)
                     .stream()
                     .map(HotelImage::getUrl)
                     .toList();
-            responses.add(mapToResponse(hotel, imageUrls));
+
+            responses.add(mapToResponseWithRating(hotel, imageUrls, rating, reviewCount));
         }
+
         return responses;
     }
+
+    private HotelResponse mapToResponseWithRating(Hotel hotel, List<String> imageUrls, double rating, long reviewCount) {
+        return HotelResponse.builder()
+                .id(hotel.getId())
+                .owner(OwnerResponse.builder()
+                        .id(hotel.getOwner().getId())
+                        .username(hotel.getOwner().getUsername())
+                        .email(hotel.getOwner().getEmail())
+                        .build())
+                .name(hotel.getName())
+                .address(hotel.getAddress())
+                .city(hotel.getCity())
+                .country(hotel.getCountry())
+                .phone(hotel.getPhone())
+                .description(hotel.getDescription())
+                .status(String.valueOf(hotel.getStatus()))
+                .createdAt(hotel.getCreatedAt())
+                .images(imageUrls)
+                .rating(rating)
+                .reviewCount(reviewCount)
+                .build();
+    }
+
 }
