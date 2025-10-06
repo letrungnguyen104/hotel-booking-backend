@@ -101,9 +101,12 @@ public class HotelController {
     }
 
     @GetMapping("/owner/{ownerId}")
-    public ApiResponse<List<HotelResponse>> getHotelsByOwner(@PathVariable int ownerId) {
+    public ApiResponse<List<HotelResponse>> getHotelsByOwner(
+            @PathVariable int ownerId,
+            @RequestParam(required = false) String status
+    ) {
         return ApiResponse.<List<HotelResponse>>builder()
-                .result(hotelService.getHotelsByOwner(ownerId))
+                .result(hotelService.getHotelsByOwner(ownerId, status))
                 .build();
     }
 
