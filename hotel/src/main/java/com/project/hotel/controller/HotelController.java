@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -50,11 +51,23 @@ public class HotelController {
     public ApiResponse<HotelResponse> updateHotel(
             @PathVariable int id,
             @RequestPart("request") String requestJson,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestPart(value = "remainingImages", required = false) String remainingImagesJson
     ) throws JsonProcessingException {
+
         UpdateHotelRequest request = new ObjectMapper().readValue(requestJson, UpdateHotelRequest.class);
+
+        List<String> remainingImages = new ArrayList<>();
+        if (remainingImagesJson != null && !remainingImagesJson.isEmpty()) {
+            ObjectMapper mapper = new ObjectMapper();
+            remainingImages = mapper.readValue(
+                    remainingImagesJson,
+                    mapper.getTypeFactory().constructCollectionType(List.class, String.class)
+            );
+        }
+
         return ApiResponse.<HotelResponse>builder()
-                .result(hotelService.updateHotel(id, request, files))
+                .result(hotelService.updateHotel(id, request, files, remainingImages))
                 .build();
     }
 
