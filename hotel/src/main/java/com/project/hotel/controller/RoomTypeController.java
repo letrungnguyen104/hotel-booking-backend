@@ -57,11 +57,16 @@ public class RoomTypeController {
     public ApiResponse<RoomTypeResponse> updateRoomType(
             @PathVariable int id,
             @RequestPart("request") String requestJson,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestPart(value = "remainingImages", required = false) String remainingImagesJson
     ) throws JsonProcessingException {
         UpdateRoomTypeRequest request = new ObjectMapper().readValue(requestJson, UpdateRoomTypeRequest.class);
+        List<String> remainingImages = remainingImagesJson != null
+                ? new ObjectMapper().readValue(remainingImagesJson, List.class)
+                : null;
+
         return ApiResponse.<RoomTypeResponse>builder()
-                .result(roomTypeService.updateRoomType(id, request, files))
+                .result(roomTypeService.updateRoomType(id, request, files, remainingImages))
                 .build();
     }
 

@@ -14,6 +14,7 @@ import com.project.hotel.exception.AppException;
 import com.project.hotel.exception.ErrorCode;
 import com.project.hotel.repository.HotelImageRepository;
 import com.project.hotel.repository.HotelRepository;
+import com.project.hotel.repository.ReviewRepository;
 import com.project.hotel.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -38,6 +39,7 @@ public class HotelService {
     HotelImageRepository hotelImageRepository;
     UserRepository userRepository;
     FileStorageService fileStorageService;
+    ReviewRepository reviewRepository;
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public HotelResponse createHotel(CreateHotelRequest request, List<MultipartFile> files) {
@@ -88,7 +90,13 @@ public class HotelService {
                 .map(HotelImage::getUrl)
                 .toList();
 
-        return mapToResponse(hotel, imageUrls);
+        Double rating = reviewRepository.calculateAverageRatingByHotelId(id);
+        Long reviewCount = reviewRepository.countByHotelId(id);
+
+        if (rating == null) rating = 0.0;
+        if (reviewCount == null) reviewCount = 0L;
+
+        return mapToResponseWithRating(hotel, imageUrls, rating, reviewCount);
     }
 
     public List<HotelResponse> getAllHotels() {
