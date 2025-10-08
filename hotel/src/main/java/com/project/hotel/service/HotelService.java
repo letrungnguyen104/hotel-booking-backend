@@ -109,8 +109,12 @@ public class HotelService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
-    public HotelResponse updateHotel(int id, UpdateHotelRequest request, List<MultipartFile> files) {
+    public HotelResponse updateHotel(
+            int id,
+            UpdateHotelRequest request,
+            List<MultipartFile> files,
+            List<String> remainingImages
+    ) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
 
@@ -123,35 +127,42 @@ public class HotelService {
         hotel.setStatus(request.getStatus());
         hotelRepository.save(hotel);
 
-        List<String> imageUrls = new ArrayList<>();
+        List<HotelImage> currentImages = hotelImageRepository.findByHotel(hotel);
+        final List<String> effectiveRemainingImages =
+                (remainingImages == null)
+                        ? currentImages.stream().map(HotelImage::getUrl).toList()
+                        : remainingImages;
+        if (effectiveRemainingImages.isEmpty() && (files == null || files.isEmpty())) {
+            currentImages.forEach(img -> fileStorageService.deleteFile(img.getUrl()));
+            hotelImageRepository.deleteAll(currentImages);
+        } else {
+            List<HotelImage> toDelete = currentImages.stream()
+                    .filter(img -> !effectiveRemainingImages.contains(img.getUrl()))
+                    .toList();
 
+            if (!toDelete.isEmpty()) {
+                hotelImageRepository.deleteAll(toDelete);
+                toDelete.forEach(img -> fileStorageService.deleteFile(img.getUrl()));
+            }
+        }
         if (files != null && !files.isEmpty()) {
-            // Xóa ảnh cũ an toàn
-            hotelImageRepository.deleteAll(hotelImageRepository.findByHotel(hotel));
-
-            // Thêm ảnh mới
             List<HotelImage> newImages = new ArrayList<>();
-            for (int i = 0; i < files.size(); i++) {
-                MultipartFile file = files.get(i);
+            for (MultipartFile file : files) {
                 String url = fileStorageService.saveFile(file);
-
                 HotelImage image = HotelImage.builder()
                         .hotel(hotel)
                         .url(url)
-                        .isMain(i == 0)
+                        .isMain(false)
                         .createdAt(LocalDateTime.now())
                         .build();
-
                 newImages.add(image);
-                imageUrls.add(url);
             }
             hotelImageRepository.saveAll(newImages);
-        } else {
-            imageUrls = hotelImageRepository.findByHotel(hotel)
-                    .stream()
-                    .map(HotelImage::getUrl)
-                    .toList();
         }
+        List<String> imageUrls = hotelImageRepository.findByHotel(hotel)
+                .stream()
+                .map(HotelImage::getUrl)
+                .toList();
 
         return mapToResponse(hotel, imageUrls);
     }

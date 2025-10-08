@@ -30,5 +30,20 @@ public class FileStorageService {
             throw new RuntimeException("Upload file thất bại!", e);
         }
     }
-}
+    public void deleteFile(String filePath) {
+        try {
+            if (filePath == null || filePath.isBlank()) return;
+            String cleanPath = filePath.replaceFirst("^/+", "");
+            Path path = Paths.get(cleanPath);
 
+            if (!path.isAbsolute()) {
+                path = Paths.get("").resolve(cleanPath);
+            }
+
+            Files.deleteIfExists(path);
+            System.out.println("Deleted file: " + path);
+        } catch (IOException e) {
+            System.err.println("Failed to delete file: " + e.getMessage());
+        }
+    }
+}
