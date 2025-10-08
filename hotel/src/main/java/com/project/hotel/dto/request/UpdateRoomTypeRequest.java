@@ -15,4 +15,5 @@ public class UpdateRoomTypeRequest {
     int capacity;
     Double pricePerNight;
     List<Integer> amenityIds;
+    String status;
 }

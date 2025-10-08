@@ -157,7 +157,12 @@ public class RoomTypeService {
     }
 
     @Transactional
-    public RoomTypeResponse updateRoomType(int id, UpdateRoomTypeRequest request, List<MultipartFile> files) {
+    public RoomTypeResponse updateRoomType(
+            int id,
+            UpdateRoomTypeRequest request,
+            List<MultipartFile> files,
+            List<String> remainingImages
+    ) {
         RoomType roomType = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));
 
@@ -166,37 +171,47 @@ public class RoomTypeService {
         roomType.setCapacity(request.getCapacity());
         roomType.setPricePerNight(request.getPricePerNight());
 
+        if (request.getStatus() != null) {
+            try {
+                roomType.setStatus(RoomTypeStatus.valueOf(request.getStatus().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.INVALID_STATUS);
+            }
+        }
+
         List<Amenity> amenitiesList = amenityRepository.findAllById(request.getAmenityIds());
         roomType.setAmenities(amenitiesList);
 
-        List<String> imageUrls = new ArrayList<>();
-
+        List<RoomTypeImage> currentImages = roomTypeImageRepository.findByRoomType(roomType);
+        final List<String> effectiveRemaining =
+                (remainingImages == null)
+                        ? currentImages.stream().map(RoomTypeImage::getUrl).toList()
+                        : remainingImages;
+        List<RoomTypeImage> toDelete = currentImages.stream()
+                .filter(img -> !effectiveRemaining.contains(img.getUrl()))
+                .toList();
+        if (!toDelete.isEmpty()) {
+            roomTypeImageRepository.deleteAll(toDelete);
+            toDelete.forEach(img -> fileStorageService.deleteFile(img.getUrl()));
+        }
         if (files != null && !files.isEmpty()) {
-            roomTypeImageRepository.deleteByRoomType(roomType);
-
             List<RoomTypeImage> newImages = new ArrayList<>();
-            for (int i = 0; i < files.size(); i++) {
-                MultipartFile file = files.get(i);
+            for (MultipartFile file : files) {
                 String url = fileStorageService.saveFile(file);
-
-                RoomTypeImage image = RoomTypeImage.builder()
+                newImages.add(RoomTypeImage.builder()
                         .roomType(roomType)
                         .url(url)
-                        .isMain(i == 0)
+                        .isMain(false)
                         .createdAt(LocalDateTime.now())
-                        .build();
-
-                newImages.add(image);
-                imageUrls.add(url);
+                        .build());
             }
-
             roomTypeImageRepository.saveAll(newImages);
-        } else {
-            imageUrls = roomTypeImageRepository.findByRoomType(roomType)
-                    .stream()
-                    .map(RoomTypeImage::getUrl)
-                    .toList();
         }
+
+        List<String> imageUrls = roomTypeImageRepository.findByRoomType(roomType)
+                .stream()
+                .map(RoomTypeImage::getUrl)
+                .toList();
 
         roomTypeRepository.save(roomType);
 
