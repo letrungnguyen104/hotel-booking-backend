@@ -1,5 +1,6 @@
 package com.project.hotel.entity;
 
+import com.project.hotel.enums.RoomStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +27,7 @@ public class Room {
     @Column(name = "floor")
     int floor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    String status;
+    RoomStatus status;
 }
