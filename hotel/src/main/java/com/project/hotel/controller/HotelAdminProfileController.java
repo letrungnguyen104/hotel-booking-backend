@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/hotel-admin")
@@ -60,6 +61,23 @@ public class HotelAdminProfileController {
     public ApiResponse<List<HotelAdminResponse>> getHotelAdminList() {
         return ApiResponse.<List<HotelAdminResponse>>builder()
                 .result(hotelAdminProfileService.getListHotelAdmin())
+                .build();
+    }
+
+    @GetMapping("/my-profile")
+    @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
+    public ApiResponse<HotelAdminResponse> getMyBusinessProfile() {
+        return ApiResponse.<HotelAdminResponse>builder()
+                .result(hotelAdminProfileService.getMyBusinessProfile())
+                .build();
+    }
+
+    @GetMapping("/my-status")
+    @PreAuthorize("isAuthenticated()")
+    public ApiResponse<HotelAdminResponse> checkMyBusinessProfileStatus() {
+        Optional<HotelAdminResponse> profileOpt = hotelAdminProfileService.checkMyBusinessProfile();
+        return ApiResponse.<HotelAdminResponse>builder()
+                .result(profileOpt.orElse(null))
                 .build();
     }
 
