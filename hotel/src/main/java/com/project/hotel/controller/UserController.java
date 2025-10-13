@@ -1,6 +1,11 @@
 package com.project.hotel.controller;
 
+import com.cloudinary.Api;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.hotel.dto.request.ChangePasswordRequest;
 import com.project.hotel.dto.request.CreateUserRequest;
+import com.project.hotel.dto.request.UpdateProfileRequest;
 import com.project.hotel.dto.request.VerifyRegisterRequest;
 import com.project.hotel.dto.response.ApiResponse;
 import com.project.hotel.dto.response.UserResponse;
@@ -16,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -77,6 +83,34 @@ public class UserController {
     public ApiResponse<UserResponse> getUserById(@PathVariable("id") int id) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(id))
+                .build();
+    }
+
+    @GetMapping("/my-profile")
+    public ApiResponse<UserResponse> getProfile() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getProfile())
+                .build();
+    }
+
+    @PutMapping(value = "/my-profile", consumes = "multipart/form-data")
+    public ApiResponse<UserResponse> updateMyProfile(
+            @RequestPart("request") String requestJson,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws JsonProcessingException {
+
+        UpdateProfileRequest request = new ObjectMapper().readValue(requestJson, UpdateProfileRequest.class);
+
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateMyProfile(request, file))
+                .build();
+    }
+
+    @PutMapping("/my-profile/change-password")
+    public ApiResponse<String> changeMyPassword(@RequestBody ChangePasswordRequest request) {
+        userService.changeMyPassword(request);
+        return ApiResponse.<String>builder()
+                .result("Password changed successfully!")
                 .build();
     }
 }

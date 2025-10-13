@@ -1,6 +1,8 @@
 package com.project.hotel.service;
 
+import com.project.hotel.dto.request.ChangePasswordRequest;
 import com.project.hotel.dto.request.CreateUserRequest;
+import com.project.hotel.dto.request.UpdateProfileRequest;
 import com.project.hotel.dto.response.UserResponse;
 import com.project.hotel.entity.Role;
 import com.project.hotel.entity.User;
@@ -17,9 +19,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -31,6 +36,7 @@ public class UserService{
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
+    FileStorageService fileStorageService;
 
     public UserResponse createUser(CreateUserRequest request){
         if(userRepository.existsByUsername(request.getUsername())){
@@ -72,4 +78,50 @@ public class UserService{
         }
         return userMapper.toUserResponse(userCheck);
     }
+
+    public UserResponse getProfile() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()) {
+            User getUser = user.get();
+            return userMapper.toUserResponse(getUser);
+        } else {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+    }
+
+    public UserResponse updateMyProfile(UpdateProfileRequest request, MultipartFile file) {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        user.setFullName(request.getFullName());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setAddress(request.getAddress());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        if (file != null && !file.isEmpty()) {
+            if (user.getImagePath() != null && !user.getImagePath().isEmpty()) {
+                fileStorageService.deleteFile(user.getImagePath());
+            }
+            String newImagePath = fileStorageService.saveFile(file);
+            user.setImagePath(newImagePath);
+        }
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toUserResponse(updatedUser);
+    }
+
+    public void changeMyPassword(ChangePasswordRequest request) {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
 }

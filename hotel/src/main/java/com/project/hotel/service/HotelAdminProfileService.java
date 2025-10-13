@@ -18,9 +18,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -86,6 +88,26 @@ public class HotelAdminProfileService {
     public List<HotelAdminResponse> getListHotelAdmin() {
         return hotelAdminProfileRepository.findAll().stream()
                 .map(hotelAdminProfileMapper::toHotelAdminResponse).toList();
+    }
+
+    public HotelAdminResponse getMyBusinessProfile() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        HotelAdminProfile profile = hotelAdminProfileRepository.findByUser_Id(user.getId())
+                .orElseThrow(() -> new AppException(ErrorCode.HOTEL_ADMIN_NOT_FOUND));
+
+        return hotelAdminProfileMapper.toHotelAdminResponse(profile);
+    }
+
+    public Optional<HotelAdminResponse> checkMyBusinessProfile() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return hotelAdminProfileRepository.findByUser_Id(user.getId())
+                .map(hotelAdminProfileMapper::toHotelAdminResponse);
     }
 
 }

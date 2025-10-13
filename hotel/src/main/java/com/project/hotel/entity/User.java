@@ -29,7 +29,7 @@ public class User {
     @Column(name = "password", nullable = false)
     String password;
 
-    @Column(name = "fullname")
+    @Column(name = "full_name")
     String fullName;
 
     @Column(name = "phone_number")
@@ -46,6 +46,9 @@ public class User {
 
     @Column(name = "img_path")
     String imagePath;
+
+    @Column(name = "address")
+    String address;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

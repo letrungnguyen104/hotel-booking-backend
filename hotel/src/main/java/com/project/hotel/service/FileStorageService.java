@@ -42,9 +42,7 @@ public class FileStorageService {
         if (imageUrl == null || imageUrl.isBlank()) {
             return;
         }
-
         try {
-            // Cloudinary xóa file dựa trên public_id, không phải URL
             String publicId = getPublicIdFromUrl(imageUrl);
             if (publicId != null) {
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
