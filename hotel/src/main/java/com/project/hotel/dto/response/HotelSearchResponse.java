@@ -10,12 +10,14 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HotelSearchResponse {
     int id;
+    String address;
     String name;
     String city;
     String country;
-    String amenities;   // chuỗi tiện ích
-    Double oldPrice;    // giá cũ (max)
-    Double newPrice;    // giá mới (min)
-    Double stars;       // trung bình rating
-    Long reviewCount;   // số lượng review
+    String amenities;
+    Double oldPrice;
+    Double newPrice;
+    Double stars;
+    Long reviewCount;
+    String image;
 }

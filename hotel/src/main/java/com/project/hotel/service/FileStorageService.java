@@ -66,7 +66,6 @@ public class FileStorageService {
         Matcher matcher = pattern.matcher(imageUrl);
         if (matcher.find()) {
             String path = matcher.group(1);
-            // Loại bỏ phần đuôi file (ví dụ .jpg, .png)
             int lastDotIndex = path.lastIndexOf('.');
             if (lastDotIndex != -1) {
                 return path.substring(0, lastDotIndex);

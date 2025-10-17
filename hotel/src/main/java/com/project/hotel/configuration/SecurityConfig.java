@@ -41,6 +41,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/hotels/search", "/hotels/top-hotels", "/hotels/get-by-id/**", "/hotels/top-hotels/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/room-type/hotel/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/service/hotel/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/uploads/*").permitAll()
                                 .anyRequest().authenticated());
 
@@ -48,7 +50,7 @@ public class SecurityConfig {
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) //Bắt Exception 401
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);

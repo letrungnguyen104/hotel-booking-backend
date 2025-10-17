@@ -5,13 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hotel.dto.request.CreateRoomTypeRequest;
 import com.project.hotel.dto.request.UpdateRoomTypeRequest;
 import com.project.hotel.dto.response.ApiResponse;
+import com.project.hotel.dto.response.RoomTypeAvailabilityResponse;
 import com.project.hotel.dto.response.RoomTypeResponse;
 import com.project.hotel.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -53,6 +56,13 @@ public class RoomTypeController {
                 .build();
     }
 
+    @GetMapping("/hotel-admin/hotel/{hotelId}")
+    public ApiResponse<List<RoomTypeResponse>> getRoomTypesByHotelIdForHotelAdmin(@PathVariable int hotelId) {
+        return ApiResponse.<List<RoomTypeResponse>>builder()
+                .result(roomTypeService.getRoomTypesByHotelIdForHotelAdmin(hotelId))
+                .build();
+    }
+
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<RoomTypeResponse> updateRoomType(
             @PathVariable int id,
@@ -75,6 +85,16 @@ public class RoomTypeController {
         roomTypeService.deleteRoomType(id);
         return ApiResponse.<String>builder()
                 .result("Room type has been closed successfully.")
+                .build();
+    }
+
+    @GetMapping("/hotel/{hotelId}/available")
+    public ApiResponse<List<RoomTypeAvailabilityResponse>> getAvailableRoomTypes(
+            @PathVariable int hotelId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut) {
+        return ApiResponse.<List<RoomTypeAvailabilityResponse>>builder()
+                .result(roomTypeService.getAvailableRoomTypesByHotel(hotelId, checkIn, checkOut))
                 .build();
     }
 }

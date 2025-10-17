@@ -250,18 +250,20 @@ public class HotelService {
                 .build();
     }
 
-    public List<HotelSearchResponse> searchHotels(String city, int guests, LocalDate checkIn, LocalDate checkOut) {
-        List<Object[]> results = hotelRepository.searchHotels(city, guests, checkIn, checkOut);
+    public List<HotelSearchResponse> searchHotels(String address, int guests, LocalDate checkIn, LocalDate checkOut) {
+        List<Object[]> results = hotelRepository.searchHotels(address, guests, checkIn, checkOut);
         return results.stream().map(row -> HotelSearchResponse.builder()
                 .id((Integer) row[0])
-                .name((String) row[1])
-                .city((String) row[2])
-                .country((String) row[3])
-                .amenities((String) row[4])
-                .oldPrice(row[5] != null ? ((Number) row[5]).doubleValue() : null)
-                .newPrice(row[6] != null ? ((Number) row[6]).doubleValue() : null)
-                .stars(row[7] != null ? ((Number) row[7]).doubleValue() : 0.0)
-                .reviewCount(row[8] != null ? ((Number) row[8]).longValue() : 0L)
+                .address((String) row[1])
+                .name((String) row[2])
+                .city((String) row[3])
+                .country((String) row[4])
+                .amenities((String) row[5])
+                .oldPrice(row[6] != null ? ((Number) row[6]).doubleValue() : null)
+                .newPrice(row[7] != null ? ((Number) row[7]).doubleValue() : null)
+                .stars(row[8] != null ? ((Number) row[8]).doubleValue() : 0.0)
+                .reviewCount(row[9] != null ? ((Number) row[9]).longValue() : 0L)
+                .image((String) row[10])
                 .build()
         ).collect(Collectors.toList());
     }

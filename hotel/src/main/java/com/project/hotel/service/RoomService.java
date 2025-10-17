@@ -63,7 +63,7 @@ public class RoomService {
     public void deleteRoom(int id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
-        room.setStatus(RoomStatus.CLOSED);
+        roomRepository.delete(room);
     }
 
     public List<RoomResponse> getRoomsByRoomType(int roomTypeId) {
@@ -81,7 +81,6 @@ public class RoomService {
         List<Room> rooms = roomRepository.findAll().stream()
                 .filter(r -> r.getRoomType().getHotel().getId() == hotelId)
                 .collect(Collectors.toList());
-
         return rooms.stream()
                 .map(roomMapper::toRoomWithTypeResponse)
                 .collect(Collectors.toList());
