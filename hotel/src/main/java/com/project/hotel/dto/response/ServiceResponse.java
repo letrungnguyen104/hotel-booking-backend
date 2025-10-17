@@ -8,12 +8,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoomWithTypeResponse {
-    int id;
-    String roomNumber;
+public class ServiceResponse {
+    Integer id;
+    String name;
+    String description;
+    Double price;
+    String type;
     String status;
-    int floor;
-    String roomTypeName;
-    int capacity;
-    double pricePerNight;
 }

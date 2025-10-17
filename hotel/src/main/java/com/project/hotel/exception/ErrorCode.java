@@ -25,6 +25,7 @@ public enum ErrorCode {
     INVALID_STATUS(1015, "Invalid room type status", HttpStatus.NOT_FOUND),
     ROOM_NUMBER_ALREADY_EXISTS(1016, "Room number already exists!", HttpStatus.BAD_REQUEST),
     ROOM_NOT_FOUND(1017, "Room not found!", HttpStatus.NOT_FOUND),
+    SERVICE_NOT_FOUND(1018, "Service not found!", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

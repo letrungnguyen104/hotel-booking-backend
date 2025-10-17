@@ -54,4 +54,7 @@ public class RoomType {
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
     List<Amenity> amenities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SpecialPrice> specialPrices = new ArrayList<>();
 }

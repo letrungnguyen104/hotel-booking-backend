@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hotel.dto.request.CreateRoomTypeRequest;
 import com.project.hotel.dto.request.UpdateRoomTypeRequest;
 import com.project.hotel.dto.response.AmenityResponse;
+import com.project.hotel.dto.response.RoomTypeAvailabilityResponse;
 import com.project.hotel.dto.response.RoomTypeResponse;
 import com.project.hotel.entity.*;
 import com.project.hotel.enums.RoomTypeStatus;
@@ -17,11 +18,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -133,7 +132,7 @@ public class RoomTypeService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoomTypeResponse> getRoomTypesByHotelId(int hotelId) {
+    public List<RoomTypeResponse> getRoomTypesByHotelIdForHotelAdmin(int hotelId) {
         List<RoomType> roomTypes = roomTypeRepository.findByHotelIdWithImages(hotelId);
         roomTypes.forEach(r -> r.getAmenities().size());
 
@@ -155,6 +154,32 @@ public class RoomTypeService {
                         .build())
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<RoomTypeResponse> getRoomTypesByHotelId(int hotelId) {
+        List<RoomType> roomTypes = roomTypeRepository.findByHotelIdWithImages(hotelId);
+        roomTypes.forEach(r -> r.getAmenities().size());
+
+        return roomTypes.stream()
+                .filter(rt -> rt.getStatus() == RoomTypeStatus.ACTIVE)
+                .map(r -> RoomTypeResponse.builder()
+                        .id(r.getId())
+                        .name(r.getName())
+                        .description(r.getDescription())
+                        .capacity(r.getCapacity())
+                        .pricePerNight(r.getPricePerNight())
+                        .status(String.valueOf(r.getStatus()))
+                        .images(r.getImages().stream().map(RoomTypeImage::getUrl).toList())
+                        .amenities(r.getAmenities().stream()
+                                .map(a -> AmenityResponse.builder()
+                                        .id(a.getId())
+                                        .name(a.getName())
+                                        .build())
+                                .toList())
+                        .build())
+                .toList();
+    }
+
 
     @Transactional
     public RoomTypeResponse updateRoomType(
@@ -238,5 +263,31 @@ public class RoomTypeService {
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));
         roomType.setStatus(RoomTypeStatus.CLOSED);
         roomTypeRepository.save(roomType);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RoomTypeAvailabilityResponse> getAvailableRoomTypesByHotel(int hotelId, LocalDate checkIn, LocalDate checkOut) {
+        List<Object[]> results = roomTypeRepository.findAvailableRoomTypesByHotelAndDate(hotelId, checkIn, checkOut);
+
+        List<RoomTypeResponse> fullRoomTypes = getRoomTypesByHotelId(hotelId);
+        Map<Integer, RoomTypeResponse> fullRoomTypesMap = fullRoomTypes.stream()
+                .collect(Collectors.toMap(RoomTypeResponse::getId, rt -> rt));
+
+        return results.stream().map(row -> {
+            Integer id = (Integer) row[0];
+            RoomTypeResponse fullInfo = fullRoomTypesMap.get(id);
+
+            return RoomTypeAvailabilityResponse.builder()
+                    .id(id)
+                    .name((String) row[1])
+                    .description((String) row[2])
+                    .capacity((Integer) row[3])
+                    .pricePerNight((Double) row[4])
+                    .status((String) row[5])
+                    .availableRoomsCount(((Number) row[6]).intValue())
+                    .images(fullInfo != null ? fullInfo.getImages() : new ArrayList<>())
+                    .amenities(fullInfo != null ? fullInfo.getAmenities() : new ArrayList<>())
+                    .build();
+        }).collect(Collectors.toList());
     }
 }

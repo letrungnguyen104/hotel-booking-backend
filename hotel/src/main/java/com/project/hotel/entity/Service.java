@@ -1,5 +1,7 @@
 package com.project.hotel.entity;
 
+import com.project.hotel.enums.ServiceStatus;
+import com.project.hotel.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,11 +33,13 @@ public class Service {
     @Column(name = "price")
     Double price;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    String type;
+    ServiceType type;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    String status;
+    ServiceStatus status;
 
     @OneToMany(mappedBy = "service")
     Set<BookingService> bookingServices;

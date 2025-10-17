@@ -21,6 +21,7 @@ public interface RoomMapper {
                 .roomTypeName(room.getRoomType().getName())
                 .capacity(room.getRoomType().getCapacity())
                 .pricePerNight(room.getRoomType().getPricePerNight())
+                .id(room.getId())
                 .build();
     }
 }
