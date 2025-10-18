@@ -15,7 +15,8 @@ public class RoomTypeAvailabilityResponse {
     String name;
     String description;
     int capacity;
-    Double pricePerNight;
+    Double oldPrice;
+    Double newPrice;
     String status;
     List<String> images;
     List<AmenityResponse> amenities;
