@@ -282,9 +282,10 @@ public class RoomTypeService {
                     .name((String) row[1])
                     .description((String) row[2])
                     .capacity((Integer) row[3])
-                    .pricePerNight((Double) row[4])
-                    .status((String) row[5])
-                    .availableRoomsCount(((Number) row[6]).intValue())
+                    .oldPrice((Double) row[4])
+                    .newPrice((Double) row[5])
+                    .status((String) row[6])
+                    .availableRoomsCount(((Number) row[7]).intValue())
                     .images(fullInfo != null ? fullInfo.getImages() : new ArrayList<>())
                     .amenities(fullInfo != null ? fullInfo.getAmenities() : new ArrayList<>())
                     .build();

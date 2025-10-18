@@ -1,5 +1,7 @@
 package com.project.hotel.entity;
 
+import com.project.hotel.enums.PaymentMethod;
+import com.project.hotel.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -25,14 +27,16 @@ public class Payment {
     @Column(name = "amount")
     Double amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "method")
-    String method;
+    PaymentMethod method;
 
     @Column(name = "transaction_id")
     String transactionId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    String status;
+    PaymentStatus status;
 
     @Column(name = "paid_at")
     LocalDateTime paidAt;
