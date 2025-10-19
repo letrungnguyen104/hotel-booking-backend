@@ -3,10 +3,7 @@ package com.project.hotel.controller;
 import com.cloudinary.Api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.hotel.dto.request.ChangePasswordRequest;
-import com.project.hotel.dto.request.CreateUserRequest;
-import com.project.hotel.dto.request.UpdateProfileRequest;
-import com.project.hotel.dto.request.VerifyRegisterRequest;
+import com.project.hotel.dto.request.*;
 import com.project.hotel.dto.response.ApiResponse;
 import com.project.hotel.dto.response.UserResponse;
 import com.project.hotel.entity.User;
@@ -20,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,6 +109,31 @@ public class UserController {
         userService.changeMyPassword(request);
         return ApiResponse.<String>builder()
                 .result("Password changed successfully!")
+                .build();
+    }
+
+    @PostMapping("/admin")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<UserResponse> adminCreateUser(@RequestBody @Valid AdminCreateUserRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.adminCreateUser(request))
+                .build();
+    }
+
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<UserResponse> adminUpdateUser(@PathVariable int id, @RequestBody @Valid AdminUpdateUserRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.adminUpdateUser(id, request))
+                .build();
+    }
+
+    @DeleteMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<String> adminDeleteUser(@PathVariable int id) {
+        userService.adminDeleteUser(id);
+        return ApiResponse.<String>builder()
+                .result("User deactivated successfully")
                 .build();
     }
 }

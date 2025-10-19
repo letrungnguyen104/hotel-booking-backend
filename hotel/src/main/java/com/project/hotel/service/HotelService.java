@@ -21,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +42,7 @@ public class HotelService {
     UserRepository userRepository;
     FileStorageService fileStorageService;
     ReviewRepository reviewRepository;
+    NotificationService notificationService;
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public HotelResponse createHotel(CreateHotelRequest request, List<MultipartFile> files) {
@@ -125,6 +128,33 @@ public class HotelService {
     ) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            hotel.setStatus(request.getStatus());
+        } else {
+            if (hotel.getOwner().getId() != user.getId()) {
+                throw new AppException(ErrorCode.UNAUTHORIZED);
+            }
+            HotelStatus currentStatus = hotel.getStatus();
+            HotelStatus requestedStatus = request.getStatus();
+
+            if (currentStatus != requestedStatus) {
+                boolean isAllowedToggle = (currentStatus == HotelStatus.ACTIVE && requestedStatus == HotelStatus.CLOSED) ||
+                        (currentStatus == HotelStatus.CLOSED && requestedStatus == HotelStatus.ACTIVE);
+
+                if (!isAllowedToggle) {
+                    throw new AppException(ErrorCode.FORBIDDEN_STATUS_CHANGE);
+                }
+                hotel.setStatus(requestedStatus);
+            }
+        }
 
         hotel.setName(request.getName());
         hotel.setAddress(request.getAddress());
@@ -334,6 +364,81 @@ public class HotelService {
                 .rating(rating)
                 .reviewCount(reviewCount)
                 .build();
+    }
+
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public HotelResponse approveHotel(int id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+        if (hotel.getStatus() != HotelStatus.PENDING) {
+            throw new AppException(ErrorCode.HOTEL_NOT_PENDING);
+        }
+        hotel.setStatus(HotelStatus.ACTIVE);
+        hotelRepository.save(hotel);
+        notificationService.notifyHotelApproved(hotel);
+        return mapToResponse(hotel, getHotelImageUrls(hotel));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public HotelResponse rejectHotel(int id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+        if (hotel.getStatus() != HotelStatus.PENDING) {
+            throw new AppException(ErrorCode.HOTEL_NOT_PENDING);
+        }
+        hotel.setStatus(HotelStatus.REJECTED);
+        hotelRepository.save(hotel);
+        notificationService.notifyHotelRejected(hotel);
+        return mapToResponse(hotel, getHotelImageUrls(hotel));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public HotelResponse banHotel(int id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+        if (hotel.getStatus() == HotelStatus.INACTIVE) {
+            throw new AppException(ErrorCode.HOTEL_ALREADY_BANNED);
+        }
+        hotel.setStatus(HotelStatus.INACTIVE);
+        hotelRepository.save(hotel);
+        notificationService.notifyHotelBanned(hotel);
+        return mapToResponse(hotel, getHotelImageUrls(hotel));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public HotelResponse unbanHotel(int id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+        if (hotel.getStatus() == HotelStatus.INACTIVE || hotel.getStatus() == HotelStatus.REJECTED || hotel.getStatus() == HotelStatus.CLOSED) {
+            hotel.setStatus(HotelStatus.ACTIVE);
+            hotelRepository.save(hotel);
+            notificationService.notifyHotelUnbanned(hotel);
+            return mapToResponse(hotel, getHotelImageUrls(hotel));
+        } else {
+            throw new AppException(ErrorCode.HOTEL_NOT_BANNED);
+        }
+    }
+
+    private List<String> getHotelImageUrls(Hotel hotel) {
+        return hotelImageRepository.findByHotel(hotel)
+                .stream()
+                .map(HotelImage::getUrl)
+                .toList();
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public List<HotelResponse> getAllHotelsForAdmin() {
+        List<Hotel> hotels = hotelRepository.findAll();
+        hotels.sort((h1, h2) -> h2.getCreatedAt().compareTo(h1.getCreatedAt()));
+        List<HotelResponse> responses = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            responses.add(mapToResponse(hotel, getHotelImageUrls(hotel)));
+        }
+        return responses;
     }
 
 }
