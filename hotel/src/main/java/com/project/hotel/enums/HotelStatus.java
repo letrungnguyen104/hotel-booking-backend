@@ -4,5 +4,6 @@ public enum HotelStatus {
     ACTIVE,
     INACTIVE,
     PENDING,
-    CLOSED
+    CLOSED,
+    REJECTED
 }

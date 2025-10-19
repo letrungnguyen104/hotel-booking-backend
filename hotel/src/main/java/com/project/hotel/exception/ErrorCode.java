@@ -26,6 +26,12 @@ public enum ErrorCode {
     ROOM_NUMBER_ALREADY_EXISTS(1016, "Room number already exists!", HttpStatus.BAD_REQUEST),
     ROOM_NOT_FOUND(1017, "Room not found!", HttpStatus.NOT_FOUND),
     SERVICE_NOT_FOUND(1018, "Service not found!", HttpStatus.NOT_FOUND),
+    CAN_NOT_DELETE_SELF(1019, "Can not delete self!", HttpStatus.BAD_REQUEST),
+    HOTEL_NOT_PENDING(1020, "Hotel not pending!", HttpStatus.BAD_REQUEST),
+    HOTEL_ALREADY_BANNED(1021, "Hotel already banned!", HttpStatus.BAD_REQUEST),
+    HOTEL_NOT_BANNED(1022, "Hotel note banned!", HttpStatus.BAD_REQUEST),
+    NOTIFICATION_NOT_FOUND(1023, "Notification not found!", HttpStatus.NOT_FOUND),
+    FORBIDDEN_STATUS_CHANGE(1024, "Forbidden status change!", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

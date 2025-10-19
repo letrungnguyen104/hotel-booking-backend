@@ -9,6 +9,7 @@ import com.project.hotel.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,11 +87,12 @@ public class HotelController {
                 .build();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ApiResponse<Void> deleteHotel(@PathVariable int id) {
+    @DeleteMapping("/close/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
+    public ApiResponse<Void> closeHotel(@PathVariable int id) {
         hotelService.deleteHotel(id);
         return ApiResponse.<Void>builder()
-                .message("Delete Successfully!")
+                .message("Hotel set to CLOSED successfully!")
                 .build();
     }
 
@@ -120,6 +122,45 @@ public class HotelController {
     ) {
         return ApiResponse.<List<HotelResponse>>builder()
                 .result(hotelService.getHotelsByOwner(ownerId, status))
+                .build();
+    }
+
+    @PatchMapping("/admin/approve/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<HotelResponse> approveHotel(@PathVariable int id) {
+        return ApiResponse.<HotelResponse>builder()
+                .result(hotelService.approveHotel(id))
+                .build();
+    }
+
+    @PatchMapping("/admin/reject/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<HotelResponse> rejectHotel(@PathVariable int id) {
+        return ApiResponse.<HotelResponse>builder()
+                .result(hotelService.rejectHotel(id))
+                .build();
+    }
+
+    @PatchMapping("/admin/ban/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<HotelResponse> banHotel(@PathVariable int id) {
+        return ApiResponse.<HotelResponse>builder()
+                .result(hotelService.banHotel(id))
+                .build();
+    }
+
+    @PatchMapping("/admin/unban/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<HotelResponse> unbanHotel(@PathVariable int id) {
+        return ApiResponse.<HotelResponse>builder()
+                .result(hotelService.unbanHotel(id))
+                .build();
+    }
+
+    @GetMapping("/admin/get-alls")
+    public ApiResponse<List<HotelResponse>> getAllHotelsForAdmin() {
+        return ApiResponse.<List<HotelResponse>>builder()
+                .result(hotelService.getAllHotelsForAdmin())
                 .build();
     }
 }

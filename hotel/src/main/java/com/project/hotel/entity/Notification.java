@@ -1,5 +1,7 @@
 package com.project.hotel.entity;
 
+import com.project.hotel.enums.NotificationStatus;
+import com.project.hotel.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,11 +30,13 @@ public class Notification {
     @Column(name = "message")
     String message;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    String type;
+    NotificationType type;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    String status;
+    NotificationStatus status;
 
     @Column(name = "createdAt")
     LocalDateTime createdAt;

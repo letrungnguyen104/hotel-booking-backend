@@ -1,8 +1,6 @@
 package com.project.hotel.service;
 
-import com.project.hotel.dto.request.ChangePasswordRequest;
-import com.project.hotel.dto.request.CreateUserRequest;
-import com.project.hotel.dto.request.UpdateProfileRequest;
+import com.project.hotel.dto.request.*;
 import com.project.hotel.dto.response.UserResponse;
 import com.project.hotel.entity.Role;
 import com.project.hotel.entity.User;
@@ -15,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,6 +45,7 @@ public class UserService{
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
         User user = userMapper.toUser(request);
+        user.setCreatedAt(LocalDateTime.now());
         user.setStatus(1);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         Role role = roleRepository.findById("USER").orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
@@ -57,7 +57,7 @@ public class UserService{
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
+        return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).stream()
                 .map(userMapper::toUserResponse).toList();
     }
 
@@ -121,6 +121,67 @@ public class UserService{
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public UserResponse adminCreateUser(AdminCreateUserRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+        }
+        User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setCreatedAt(LocalDateTime.now());
+
+        Set<Role> roles = new HashSet<>();
+        if (request.getRoles() == null || request.getRoles().isEmpty()) {
+            roles.add(roleRepository.findById("USER")
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND)));
+        } else {
+            for (String roleName : request.getRoles()) {
+                roles.add(roleRepository.findById(roleName)
+                        .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND)));
+            }
+        }
+        user.setRoles(roles);
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public UserResponse adminUpdateUser(int id, AdminUpdateUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setFullName(request.getFullName());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setAddress(request.getAddress());
+        user.setStatus(request.getStatus());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            Set<Role> newRoles = new HashSet<>();
+            for (String roleName : request.getRoles()) {
+                Role role = roleRepository.findById(roleName)
+                        .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+                newRoles.add(role);
+            }
+            user.setRoles(newRoles);
+        }
+
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public void adminDeleteUser(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (user.getUsername().equals(currentUsername)) {
+            throw new AppException(ErrorCode.CAN_NOT_DELETE_SELF);
+        }
+        user.setStatus(0);
         userRepository.save(user);
     }
 

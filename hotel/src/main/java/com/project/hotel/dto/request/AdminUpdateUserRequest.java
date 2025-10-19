@@ -1,9 +1,8 @@
-package com.project.hotel.dto.response;
+package com.project.hotel.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -11,15 +10,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    int id;
-    String username;
-    String email;
+public class AdminUpdateUserRequest {
     String fullName;
     String phoneNumber;
     String address;
-    String imagePath;
     int status;
-    Set<RoleResponse> roles;
-    LocalDateTime createdAt;
+    Set<String> roles;
 }
