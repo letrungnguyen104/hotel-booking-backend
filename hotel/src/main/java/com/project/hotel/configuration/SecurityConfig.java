@@ -44,6 +44,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/room-type/hotel/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/service/hotel/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/uploads/*").permitAll()
+                                .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated());
 
         //Cấu hình phần này để xác thực token được gửi ở Header
