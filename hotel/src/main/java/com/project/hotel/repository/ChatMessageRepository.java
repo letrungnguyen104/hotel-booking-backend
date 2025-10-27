@@ -16,6 +16,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Intege
             "(m.sender.id = :receiverId AND m.receiver.id = :senderId) " +
             "ORDER BY m.sentAt ASC")
     List<ChatMessage> findChatHistory(@Param("senderId") int senderId, @Param("receiverId") int receiverId);
+
     @Query("SELECT m FROM ChatMessage m " +
             "WHERE m.id IN (" +
             "  SELECT MAX(m2.id) FROM ChatMessage m2 " +
@@ -23,6 +24,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Intege
             "  GROUP BY CASE WHEN m2.sender.id = :userId THEN m2.receiver.id ELSE m2.sender.id END" +
             ") ORDER BY m.sentAt DESC")
     List<ChatMessage> findLastMessageOfEachConversation(@Param("userId") int userId);
-    long countByReceiverIdAndStatus(int receiverId, com.project.hotel.enums.MessageStatus status);
-    long countBySenderIdAndReceiverIdAndStatus(int senderId, int receiverId, MessageStatus status);
+
+    long countByReceiver_IdAndStatus(int receiverId, com.project.hotel.enums.MessageStatus status);
+    long countBySender_IdAndReceiver_IdAndStatus(int senderId, int receiverId, MessageStatus status);
 }

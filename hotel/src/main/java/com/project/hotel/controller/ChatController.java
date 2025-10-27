@@ -20,14 +20,10 @@ import java.security.Principal;
 public class ChatController {
     SimpMessagingTemplate messagingTemplate;
     ChatService chatService;
-
-    // Client sẽ gửi tin nhắn đến "/app/chat.private"
     @MessageMapping("/chat.private")
     public void handlePrivateMessage(@Payload ChatMessageRequest request, Principal principal) {
         String senderUsername = principal.getName();
         ChatMessageResponse response = chatService.processAndSaveMessage(request, senderUsername);
-        // 3. Gửi tin nhắn đến người nhận
-        // Gửi đến kênh riêng của người nhận: /user/{username}/queue/messages
         messagingTemplate.convertAndSendToUser(
                 response.getReceiverUsername(),
                 "/queue/messages",

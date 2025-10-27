@@ -135,7 +135,6 @@ public class HotelService {
 
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-
         if (isAdmin) {
             hotel.setStatus(request.getStatus());
         } else {
@@ -155,32 +154,28 @@ public class HotelService {
                 hotel.setStatus(requestedStatus);
             }
         }
-
         hotel.setName(request.getName());
         hotel.setAddress(request.getAddress());
         hotel.setCity(request.getCity());
         hotel.setCountry(request.getCountry());
         hotel.setPhone(request.getPhone());
         hotel.setDescription(request.getDescription());
-        hotel.setStatus(request.getStatus());
         hotelRepository.save(hotel);
-
         List<HotelImage> currentImages = hotelImageRepository.findByHotel(hotel);
         final List<String> effectiveRemainingImages =
                 (remainingImages == null)
                         ? currentImages.stream().map(HotelImage::getUrl).toList()
                         : remainingImages;
+
         if (effectiveRemainingImages.isEmpty() && (files == null || files.isEmpty())) {
-            currentImages.forEach(img -> fileStorageService.deleteFile(img.getUrl()));
             hotelImageRepository.deleteAll(currentImages);
+
         } else {
             List<HotelImage> toDelete = currentImages.stream()
                     .filter(img -> !effectiveRemainingImages.contains(img.getUrl()))
                     .toList();
-
             if (!toDelete.isEmpty()) {
                 hotelImageRepository.deleteAll(toDelete);
-                toDelete.forEach(img -> fileStorageService.deleteFile(img.getUrl()));
             }
         }
         if (files != null && !files.isEmpty()) {
@@ -197,7 +192,19 @@ public class HotelService {
             }
             hotelImageRepository.saveAll(newImages);
         }
-        List<String> imageUrls = hotelImageRepository.findByHotel(hotel)
+
+        List<HotelImage> allHotelImages = hotelImageRepository.findByHotel(hotel);
+
+        if (allHotelImages != null && !allHotelImages.isEmpty()) {
+            for (int i = 0; i < allHotelImages.size(); i++) {
+                HotelImage img = allHotelImages.get(i);
+                img.setMain(i == 0);
+            }
+            hotelImageRepository.saveAll(allHotelImages);
+        }
+
+        assert allHotelImages != null;
+        List<String> imageUrls = allHotelImages
                 .stream()
                 .map(HotelImage::getUrl)
                 .toList();

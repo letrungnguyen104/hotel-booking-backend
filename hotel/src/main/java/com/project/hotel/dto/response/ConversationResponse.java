@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class ConversationResponse {
     private int conversationPartnerId;
     private String conversationPartnerName;
+    private String conversationPartnerUsername;
     private String conversationPartnerAvatar;
     private String lastMessage;
     private String lastMessageSender;

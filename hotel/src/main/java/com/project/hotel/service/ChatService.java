@@ -36,10 +36,25 @@ public class ChatService {
 
     @Transactional
     public ChatMessageResponse processAndSaveMessage(ChatMessageRequest request, String senderUsername) {
+        if (request.getMessageType() == null) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
+
+        MessageType messageType;
+        try {
+            messageType = MessageType.valueOf(request.getMessageType().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
+
         User sender = userRepository.findByUsername(senderUsername)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         User receiver = userRepository.findById(request.getReceiverId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if (request.getHotelId() == null) {
+            throw new AppException(ErrorCode.HOTEL_NOT_FOUND);
+        }
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
 
@@ -48,7 +63,7 @@ public class ChatService {
                 .receiver(receiver)
                 .hotel(hotel)
                 .message(request.getMessage())
-                .messageType(MessageType.valueOf(request.getMessageType()))
+                .messageType(messageType)
                 .status(MessageStatus.SENT)
                 .sentAt(LocalDateTime.now())
                 .build();
@@ -85,7 +100,7 @@ public class ChatService {
         return lastMessages.stream().map(msg -> {
             boolean isSender = msg.getSender().getId() == currentUser.getId();
             User partner = isSender ? msg.getReceiver() : msg.getSender();
-            long unreadCount = chatMessageRepository.countBySenderIdAndReceiverIdAndStatus(
+            long unreadCount = chatMessageRepository.countBySender_IdAndReceiver_IdAndStatus(
                     partner.getId(),
                     currentUser.getId(),
                     MessageStatus.SENT
@@ -93,6 +108,7 @@ public class ChatService {
 
             return ConversationResponse.builder()
                     .conversationPartnerId(partner.getId())
+                    .conversationPartnerUsername(partner.getUsername())
                     .conversationPartnerName(partner.getFullName() != null ? partner.getFullName() : partner.getUsername())
                     .conversationPartnerAvatar(partner.getImagePath())
                     .lastMessage(msg.getMessage())

@@ -11,5 +11,8 @@ public interface ChatMessageMapper {
     @Mapping(source = "receiver.id", target = "receiverId")
     @Mapping(source = "sender.username", target = "senderUsername")
     @Mapping(source = "receiver.username", target = "receiverUsername")
+    @Mapping(source = "sender.fullName", target = "senderFullName")
+    @Mapping(source = "receiver.fullName", target = "receiverFullName")
+    @Mapping(source = "hotel.id", target = "hotelId")
     ChatMessageResponse toChatMessageResponse(ChatMessage chatMessage);
 }

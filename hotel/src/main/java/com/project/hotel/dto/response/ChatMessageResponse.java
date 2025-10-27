@@ -16,8 +16,11 @@ public class ChatMessageResponse {
     int receiverId;
     String senderUsername;
     String receiverUsername;
+    private String senderFullName;
+    private String receiverFullName;
     String message;
     String messageType;
     String status;
     LocalDateTime sentAt;
+    private int hotelId;
 }
