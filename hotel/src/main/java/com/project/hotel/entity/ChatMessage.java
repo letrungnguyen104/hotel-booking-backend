@@ -1,5 +1,7 @@
+// src/main/java/com/project/hotel/entity/ChatMessage.java
 package com.project.hotel.entity;
-
+import com.project.hotel.enums.MessageStatus;
+import com.project.hotel.enums.MessageType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -30,15 +32,18 @@ public class ChatMessage {
     @JoinColumn(name = "receiverId")
     User receiver;
 
-    @Column(name = "message")
+    @Column(name = "message", columnDefinition = "NVARCHAR(MAX)")
     String message;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "messageType")
-    String messageType;
+    MessageType messageType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    String status;
+    MessageStatus status;
 
+    @Builder.Default
     @Column(name = "sentAt")
-    LocalDateTime sentAt;
+    LocalDateTime sentAt = LocalDateTime.now();
 }

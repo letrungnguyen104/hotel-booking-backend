@@ -32,6 +32,7 @@ public enum ErrorCode {
     HOTEL_NOT_BANNED(1022, "Hotel note banned!", HttpStatus.BAD_REQUEST),
     NOTIFICATION_NOT_FOUND(1023, "Notification not found!", HttpStatus.NOT_FOUND),
     FORBIDDEN_STATUS_CHANGE(1024, "Forbidden status change!", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST(1025, "Invalid request!", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

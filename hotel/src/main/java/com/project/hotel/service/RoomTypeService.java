@@ -190,7 +190,6 @@ public class RoomTypeService {
     ) {
         RoomType roomType = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));
-
         roomType.setName(request.getName());
         roomType.setDescription(request.getDescription());
         roomType.setCapacity(request.getCapacity());
@@ -206,18 +205,19 @@ public class RoomTypeService {
 
         List<Amenity> amenitiesList = amenityRepository.findAllById(request.getAmenityIds());
         roomType.setAmenities(amenitiesList);
-
+        roomTypeRepository.save(roomType);
         List<RoomTypeImage> currentImages = roomTypeImageRepository.findByRoomType(roomType);
         final List<String> effectiveRemaining =
                 (remainingImages == null)
                         ? currentImages.stream().map(RoomTypeImage::getUrl).toList()
                         : remainingImages;
+
         List<RoomTypeImage> toDelete = currentImages.stream()
                 .filter(img -> !effectiveRemaining.contains(img.getUrl()))
                 .toList();
+
         if (!toDelete.isEmpty()) {
             roomTypeImageRepository.deleteAll(toDelete);
-            toDelete.forEach(img -> fileStorageService.deleteFile(img.getUrl()));
         }
         if (files != null && !files.isEmpty()) {
             List<RoomTypeImage> newImages = new ArrayList<>();
@@ -232,13 +232,18 @@ public class RoomTypeService {
             }
             roomTypeImageRepository.saveAll(newImages);
         }
+        List<RoomTypeImage> allRoomTypeImages = roomTypeImageRepository.findByRoomType(roomType);
 
-        List<String> imageUrls = roomTypeImageRepository.findByRoomType(roomType)
-                .stream()
+        if (allRoomTypeImages != null && !allRoomTypeImages.isEmpty()) {
+            for (int i = 0; i < allRoomTypeImages.size(); i++) {
+                RoomTypeImage img = allRoomTypeImages.get(i);
+                img.setMain(i == 0);
+            }
+            roomTypeImageRepository.saveAll(allRoomTypeImages);
+        }
+        List<String> finalImageUrls = allRoomTypeImages.stream()
                 .map(RoomTypeImage::getUrl)
                 .toList();
-
-        roomTypeRepository.save(roomType);
 
         return RoomTypeResponse.builder()
                 .id(roomType.getId())
@@ -247,7 +252,7 @@ public class RoomTypeService {
                 .capacity(roomType.getCapacity())
                 .pricePerNight(roomType.getPricePerNight())
                 .status(String.valueOf(roomType.getStatus()))
-                .images(imageUrls)
+                .images(finalImageUrls)
                 .amenities(roomType.getAmenities().stream()
                         .map(a -> AmenityResponse.builder()
                                 .id(a.getId())
