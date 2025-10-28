@@ -33,6 +33,10 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND(1023, "Notification not found!", HttpStatus.NOT_FOUND),
     FORBIDDEN_STATUS_CHANGE(1024, "Forbidden status change!", HttpStatus.BAD_REQUEST),
     INVALID_REQUEST(1025, "Invalid request!", HttpStatus.BAD_REQUEST),
+    BOOKING_NOT_FOUND(1026, "Booking not found!", HttpStatus.NOT_FOUND),
+    BOOKING_CANNOT_BE_CANCELLED(1027, "Booking can not be cancelled!", HttpStatus.BAD_REQUEST),
+    INVALID_ACTION(1028, "Invalid action!", HttpStatus.BAD_REQUEST),
+    INVALID_CHECKIN_DATE(1029, "Invalid check in date!", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

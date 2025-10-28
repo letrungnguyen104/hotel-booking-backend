@@ -3,6 +3,7 @@ package com.project.hotel.service;
 
 import com.project.hotel.dto.request.CreateNotificationRequest;
 import com.project.hotel.dto.response.NotificationResponse;
+import com.project.hotel.entity.Booking;
 import com.project.hotel.entity.Hotel;
 import com.project.hotel.entity.Notification;
 import com.project.hotel.entity.User;
@@ -52,6 +53,81 @@ public class NotificationService {
                 .title(request.getTitle())
                 .message(request.getMessage())
                 .build();
+    }
+
+    public void notifyNewBooking(Booking booking) {
+        String title = "New Booking Received!";
+        String message = String.format(
+                "You have a new booking (#%d) from user %s for %d night(s).",
+                booking.getId(),
+                booking.getUser().getFullName(), // Lấy tên người dùng
+                booking.getCheckInDate().until(booking.getCheckOutDate()).getDays()
+        );
+        createAndSaveNotification(booking.getHotel().getOwner(), title, message, "NEW_BOOKING");
+    }
+
+    public void notifyPaymentSuccess(Booking booking) {
+        String title = "Payment Successful!";
+        String message = String.format(
+                "Your payment for booking #%d at '%s' was successful. The hotel is reviewing your booking.",
+                booking.getId(),
+                booking.getHotel().getName()
+        );
+        createAndSaveNotification(booking.getUser(), title, message, "PAYMENT_SUCCESS");
+    }
+
+    public void notifyBookingConfirmed(Booking booking) {
+        String title = "Your Booking is Confirmed!";
+        String message = String.format(
+                "Your booking #%d for '%s' (Check-in: %s) has been confirmed.",
+                booking.getId(),
+                booking.getHotel().getName(),
+                booking.getCheckInDate().toString()
+        );
+        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CONFIRMED");
+    }
+
+    public void notifyBookingCancelledByUser(Booking booking) {
+        String title = "Booking Cancelled by User";
+        String message = String.format(
+                "Booking #%d (User: %s) has been cancelled by the user. Reason: %s",
+                booking.getId(),
+                booking.getUser().getUsername(),
+                booking.getCancellationReason()
+        );
+        createAndSaveNotification(booking.getHotel().getOwner(), title, message, "BOOKING_CANCELLED");
+    }
+
+    public void notifyCancellationRequest(Booking booking) {
+        String title = "Cancellation Request";
+        String message = String.format(
+                "User %s has requested to cancel booking #%d for '%s'. Reason: %s",
+                booking.getUser().getUsername(),
+                booking.getId(),
+                booking.getHotel().getName(),
+                booking.getCancellationReason()
+        );
+        createAndSaveNotification(booking.getHotel().getOwner(), title, message, "BOOKING_CANCELLED");
+    }
+
+    public void notifyCancellationApproved(Booking booking) {
+        String title = "Cancellation Approved";
+        String message = String.format(
+                "Your request to cancel booking #%d for '%s' has been approved.",
+                booking.getId(),
+                booking.getHotel().getName()
+        );
+        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CANCELLED");
+    }
+
+    public void notifyCancellationRejected(Booking booking) {
+        String title = "Cancellation Rejected";
+        String message = String.format(
+                "Your request to cancel booking #%d for '%s' has been rejected by the hotel.",
+                booking.getId(),
+                booking.getHotel().getName()
+        );
+        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CONFIRMED"); // Dùng lại type CONFIRMED
     }
 
     public void notifyHotelApproved(Hotel hotel) {

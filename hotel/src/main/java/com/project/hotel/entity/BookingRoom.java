@@ -23,4 +23,7 @@ public class BookingRoom {
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     Room room;
+
+    @Column(name = "price")
+    Double price;
 }

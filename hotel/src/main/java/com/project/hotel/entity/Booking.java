@@ -1,5 +1,7 @@
 package com.project.hotel.entity;
 
+import com.project.hotel.enums.BookingStatus;
+import com.project.hotel.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -37,18 +39,27 @@ public class Booking {
     @Column(name = "total_price")
     Double totalPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    String status;
+    BookingStatus status;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
-    String paymentStatus;
+    PaymentStatus paymentStatus;
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "booking")
+    @Column(name = "cancellation_reason", columnDefinition = "NVARCHAR(MAX)")
+    String cancellationReason;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     Set<BookingRoom> bookingRooms;
 
-    @OneToMany(mappedBy = "booking")
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     Set<BookingService> bookingServices;
 }

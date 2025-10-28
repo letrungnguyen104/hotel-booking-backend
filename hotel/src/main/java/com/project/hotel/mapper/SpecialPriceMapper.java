@@ -11,6 +11,5 @@ import java.util.List;
 public interface SpecialPriceMapper {
     @Mapping(source = "roomType.id", target = "roomTypeId")
     SpecialPriceResponse toResponse(SpecialPrice specialPrice);
-
     List<SpecialPriceResponse> toResponseList(List<SpecialPrice> specialPrices);
 }
