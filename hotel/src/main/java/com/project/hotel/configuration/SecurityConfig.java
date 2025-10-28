@@ -44,10 +44,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/room-type/hotel/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/service/hotel/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/uploads/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/bookings/vnpay-return").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated());
 
-        //Cấu hình phần này để xác thực token được gửi ở Header
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
