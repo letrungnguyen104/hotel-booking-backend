@@ -4,8 +4,10 @@ package com.project.hotel.service;
 import com.project.hotel.configuration.VNPAYConfig;
 import com.project.hotel.dto.request.BookingRequest;
 import com.project.hotel.dto.request.CancelBookingRequest;
+import com.project.hotel.dto.request.ValidatePromotionRequest;
 import com.project.hotel.dto.response.BookingDetailResponse;
 import com.project.hotel.dto.response.CreatePaymentResponse;
+import com.project.hotel.dto.response.ValidatePromotionResponse;
 import com.project.hotel.entity.*;
         import com.project.hotel.enums.BookingStatus;
 import com.project.hotel.enums.PaymentMethod;
@@ -49,6 +51,7 @@ public class BookingService {
     final RoomTypeRepository roomTypeRepository;
     final HotelImageRepository hotelImageRepo;
     final NotificationService notificationService;
+    final PromotionService promotionService;
 
     @Value("${vnpay.tmn-code}") private String tmnCode;
     @Value("${vnpay.hash-secret}") private String hashSecret;
@@ -63,62 +66,76 @@ public class BookingService {
 
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+        double calculatedRoomTotal = 0;
+        double calculatedServiceTotal = 0;
+        long totalNights = request.getCheckInDate().until(request.getCheckOutDate()).getDays();
+        if (totalNights == 0) totalNights = 1;
 
+        for (BookingRequest.RoomBookingDetail roomDetail : request.getRoomsToBook()) {
+            Double pricePerNight = getPricePerNight(roomDetail.getRoomTypeId(), request.getCheckInDate());
+            calculatedRoomTotal += (pricePerNight * roomDetail.getQuantity() * totalNights);
+            if (roomDetail.getServices() != null && !roomDetail.getServices().isEmpty()) {
+                List<com.project.hotel.entity.Service> services = serviceRepository.findAllById(roomDetail.getServices());
+                for (com.project.hotel.entity.Service service : services) {
+                    calculatedServiceTotal += service.getPrice();
+                }
+            }
+        }
+
+        double basePrice = calculatedRoomTotal + calculatedServiceTotal;
+        double finalPrice = basePrice;
+        String appliedCode = null;
+        double discountAmount = 0;
+        if (request.getPromotionCode() != null && !request.getPromotionCode().isEmpty()) {
+            ValidatePromotionRequest valRequest = new ValidatePromotionRequest();
+            valRequest.setCode(request.getPromotionCode());
+            valRequest.setBasePrice(basePrice);
+
+            ValidatePromotionResponse valResponse = promotionService.validatePromotion(valRequest);
+
+            if (valResponse.isValid()) {
+                finalPrice = valResponse.getFinalPrice();
+                appliedCode = request.getPromotionCode();
+                discountAmount = valResponse.getDiscountAmount();
+            } else {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
+        }
         Booking booking = Booking.builder()
                 .user(user)
                 .hotel(hotel)
                 .checkInDate(request.getCheckInDate())
                 .checkOutDate(request.getCheckOutDate())
-                .totalPrice(request.getTotalPrice())
+                .totalPrice(finalPrice)
                 .status(BookingStatus.PENDING)
                 .paymentStatus(PaymentStatus.PENDING)
                 .createdAt(LocalDateTime.now())
+                .appliedPromotionCode(appliedCode)
+                .discountAmount(discountAmount)
                 .build();
         Booking savedBooking = bookingRepository.save(booking);
 
         for (BookingRequest.RoomBookingDetail roomDetail : request.getRoomsToBook()) {
             List<Room> availableRooms = roomRepository.findAvailableRoomsByRoomTypeAndDate(
                     roomDetail.getRoomTypeId(),
-                    request.getCheckInDate(),
-                    request.getCheckOutDate(),
+                    request.getCheckInDate(), request.getCheckOutDate(),
                     PageRequest.of(0, roomDetail.getQuantity())
             );
+            if (availableRooms.size() < roomDetail.getQuantity()) throw new AppException(ErrorCode.ROOM_NOT_FOUND);
 
-            if (availableRooms.size() < roomDetail.getQuantity()) {
-                throw new AppException(ErrorCode.ROOM_NOT_FOUND);
-            }
-
-            RoomType roomType = availableRooms.get(0).getRoomType();
-            Double pricePerNight;
-
-            List<SpecialPrice> specialPrices = specialPriceRepository.findActiveSpecialPrice(
-                    roomType.getId(),
-                    request.getCheckInDate()
-            );
-
-            if (!specialPrices.isEmpty()) {
-                pricePerNight = specialPrices.get(0).getPrice();
-            } else {
-                pricePerNight = roomType.getPricePerNight();
-            }
+            Double pricePerNight = getPricePerNight(roomDetail.getRoomTypeId(), request.getCheckInDate());
 
             for (Room room : availableRooms) {
                 bookingRoomRepository.save(BookingRoom.builder()
-                        .booking(savedBooking)
-                        .room(room)
-                        .price(pricePerNight)
-                        .build());
+                        .booking(savedBooking).room(room).price(pricePerNight).build());
             }
 
             if (roomDetail.getServices() != null && !roomDetail.getServices().isEmpty()) {
                 List<com.project.hotel.entity.Service> services = serviceRepository.findAllById(roomDetail.getServices());
                 for (com.project.hotel.entity.Service service : services) {
                     bookingServiceRepository.save(com.project.hotel.entity.BookingService.builder()
-                            .booking(savedBooking)
-                            .service(service)
-                            .quantity(1)
-                            .price(service.getPrice())
-                            .totalPrice(service.getPrice())
+                            .booking(savedBooking).service(service).quantity(1) // Giả sử số lượng 1
+                            .price(service.getPrice()).totalPrice(service.getPrice())
                             .build());
                 }
             }
@@ -126,7 +143,7 @@ public class BookingService {
 
         Payment payment = Payment.builder()
                 .booking(savedBooking)
-                .amount(request.getTotalPrice())
+                .amount(finalPrice)
                 .method(PaymentMethod.VNPAY)
                 .status(PaymentStatus.PENDING)
                 .build();
@@ -135,7 +152,7 @@ public class BookingService {
         notificationService.notifyNewBooking(savedBooking);
 
         String orderInfo = "Booking for hotel " + hotel.getId() + " - User: " + user.getId();
-        long amountInVND = (long) (request.getTotalPrice() * 100);
+        long amountInVND = (long) (finalPrice * 100);
 
         Map<String, String> vnp_Params = new TreeMap<>();
         vnp_Params.put("vnp_Version", "2.1.0");
@@ -162,6 +179,20 @@ public class BookingService {
                 .build();
     }
 
+    private Double getPricePerNight(Integer roomTypeId, LocalDate checkInDate) {
+        RoomType roomType = roomTypeRepository.findById(roomTypeId)
+                .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));
+
+        List<SpecialPrice> specialPrices = specialPriceRepository.findActiveSpecialPrice(
+                roomTypeId, checkInDate
+        );
+        if (!specialPrices.isEmpty()) {
+            return specialPrices.get(0).getPrice();
+        } else {
+            return roomType.getPricePerNight();
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<BookingDetailResponse> getMyBookings() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -172,7 +203,6 @@ public class BookingService {
         List<Booking> bookings = bookingRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
 
         log.info("Mapping {} bookings to DTO", bookings.size());
-        // Lỗi xảy ra ở đây, vì vậy chúng ta sẽ map thủ công
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookings) {
             responses.add(mapToBookingDetailResponse(booking));
@@ -355,6 +385,8 @@ public class BookingService {
                 .paymentStatus(booking.getPaymentStatus().name())
                 .createdAt(booking.getCreatedAt())
                 .cancellationReason(booking.getCancellationReason())
+                .appliedPromotionCode(booking.getAppliedPromotionCode())
+                .discountAmount(booking.getDiscountAmount())
                 .rooms(roomDetails)
                 .services(serviceDetails)
                 .build();

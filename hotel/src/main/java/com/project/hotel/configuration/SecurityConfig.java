@@ -46,6 +46,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/uploads/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/bookings/vnpay-return").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/promotions").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/promotions/featured").permitAll()
                                 .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->

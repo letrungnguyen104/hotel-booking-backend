@@ -20,6 +20,8 @@ public class BookingDetailResponse {
     private String paymentStatus;
     private LocalDateTime createdAt;
     private String cancellationReason;
+    private String appliedPromotionCode;
+    private Double discountAmount;
     private List<RoomDetail> rooms;
     private List<ServiceDetail> services;
 

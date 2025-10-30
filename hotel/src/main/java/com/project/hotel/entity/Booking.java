@@ -53,6 +53,12 @@ public class Booking {
     @Column(name = "cancellation_reason", columnDefinition = "NVARCHAR(MAX)")
     String cancellationReason;
 
+    @Column(name = "applied_promotion_code")
+    String appliedPromotionCode;
+
+    @Column(name = "discount_amount")
+    Double discountAmount;
+
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

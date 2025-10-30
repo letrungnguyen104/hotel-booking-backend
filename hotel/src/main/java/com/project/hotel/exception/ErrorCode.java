@@ -37,6 +37,8 @@ public enum ErrorCode {
     BOOKING_CANNOT_BE_CANCELLED(1027, "Booking can not be cancelled!", HttpStatus.BAD_REQUEST),
     INVALID_ACTION(1028, "Invalid action!", HttpStatus.BAD_REQUEST),
     INVALID_CHECKIN_DATE(1029, "Invalid check in date!", HttpStatus.BAD_REQUEST),
+    PROMOTION_NOT_FOUND(1029, "Promotion not found!", HttpStatus.BAD_REQUEST),
+    PROMOTION_CODE_EXISTED(1029, "Promotion code existed!", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
