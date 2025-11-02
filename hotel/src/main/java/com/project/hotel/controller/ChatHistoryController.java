@@ -18,10 +18,12 @@ public class ChatHistoryController {
     private final ChatService chatService;
 
     @GetMapping("/history/{recipientId}")
-    @PreAuthorize("isAuthenticated()")
-    public ApiResponse<List<ChatMessageResponse>> getChatHistory(@PathVariable int recipientId) {
+    public ApiResponse<List<ChatMessageResponse>> getChatHistory(
+            @PathVariable int recipientId,
+            @RequestParam(required = false) Integer hotelId
+    ) {
         return ApiResponse.<List<ChatMessageResponse>>builder()
-                .result(chatService.getChatHistory(recipientId))
+                .result(chatService.getChatHistory(recipientId, hotelId))
                 .build();
     }
 

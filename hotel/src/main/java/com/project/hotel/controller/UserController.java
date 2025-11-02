@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hotel.dto.request.*;
 import com.project.hotel.dto.response.ApiResponse;
+import com.project.hotel.dto.response.ConversationResponse;
 import com.project.hotel.dto.response.UserResponse;
 import com.project.hotel.entity.User;
 import com.project.hotel.exception.AppException;
 import com.project.hotel.exception.ErrorCode;
 import com.project.hotel.repository.UserRepository;
+import com.project.hotel.service.ChatService;
 import com.project.hotel.service.EmailVerificationService;
 import com.project.hotel.service.UserService;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +34,7 @@ public class UserController {
     UserService userService;
     UserRepository userRepository;
     EmailVerificationService verificationService;
+    ChatService chatService;
 
     Map<String, CreateUserRequest> tempUsers = new HashMap<>();
 
@@ -136,4 +140,14 @@ public class UserController {
                 .result("User deactivated successfully")
                 .build();
     }
+
+    @GetMapping("/admin/chat-list")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ApiResponse<List<ConversationResponse>> getChatListForAdmin() {
+        String adminUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ApiResponse.<List<ConversationResponse>>builder()
+                .result(chatService.getConversationsForAdmin(adminUsername))
+                .build();
+    }
+
 }

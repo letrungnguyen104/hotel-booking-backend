@@ -24,6 +24,7 @@ public class BookingDetailResponse {
     private Double discountAmount;
     private List<RoomDetail> rooms;
     private List<ServiceDetail> services;
+    private boolean hasReview;
 
     @Data
     @Builder

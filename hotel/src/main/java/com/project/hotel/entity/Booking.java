@@ -59,6 +59,11 @@ public class Booking {
     @Column(name = "discount_amount")
     Double discountAmount;
 
+    @OneToOne(mappedBy = "booking")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    Review review;
+
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

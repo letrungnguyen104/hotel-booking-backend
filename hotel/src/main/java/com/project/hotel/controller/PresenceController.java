@@ -1,5 +1,6 @@
 package com.project.hotel.controller;
 
+import com.project.hotel.dto.response.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -8,15 +9,17 @@ import java.util.Set;
 import com.project.hotel.configuration.WebSocketEventListener;
 
 @RestController
-@RequestMapping("/api/presence")
+@RequestMapping("/presence")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PresenceController {
 
-    WebSocketEventListener eventListener;
+    WebSocketEventListener webSocketEventListener;
 
     @GetMapping("/online-users")
-    public Set<String> getOnlineUsers() {
-        return eventListener.getConnectedUsers();
+    public ApiResponse<Set<String>> getOnlineUsers() {
+        return ApiResponse.<Set<String>>builder()
+                .result(webSocketEventListener.getConnectedUsers())
+                .build();
     }
 }

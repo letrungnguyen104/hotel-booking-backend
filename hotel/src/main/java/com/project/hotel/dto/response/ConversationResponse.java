@@ -20,6 +20,6 @@ public class ConversationResponse {
     private LocalDateTime timestamp;
     private long unreadCount;
     private String lastMessageStatus;
-    private int hotelId;
+    private Integer hotelId;
     private String hotelName;
 }

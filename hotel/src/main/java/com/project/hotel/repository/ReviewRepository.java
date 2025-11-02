@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
@@ -14,4 +16,8 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("SELECT COUNT(r.id) FROM Review r WHERE r.hotel.id = :hotelId")
     Long countByHotelId(@Param("hotelId") int hotelId);
+
+    boolean existsByBookingId(Integer bookingId);
+
+    List<Review> findByHotelIdOrderByCreatedAtDesc(Integer hotelId);
 }

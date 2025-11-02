@@ -17,6 +17,28 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Intege
             "ORDER BY m.sentAt ASC")
     List<ChatMessage> findChatHistory(@Param("senderId") int senderId, @Param("receiverId") int receiverId);
 
+    @Query("SELECT m FROM ChatMessage m WHERE " +
+            "(m.sender.id = :senderId AND m.receiver.id = :receiverId) OR " +
+            "(m.sender.id = :receiverId AND m.receiver.id = :senderId) " +
+            // Thêm điều kiện: chỉ lấy tin nhắn không có hotelId (Admin chat)
+            "AND m.hotel.id IS NULL " +
+            "ORDER BY m.sentAt ASC")
+    List<ChatMessage> findChatHistoryWithoutHotel(
+            @Param("senderId") int senderId,
+            @Param("receiverId") int receiverId
+    );
+
+    @Query("SELECT m FROM ChatMessage m WHERE " +
+            "((m.sender.id = :senderId AND m.receiver.id = :receiverId) OR " +
+            "(m.sender.id = :receiverId AND m.receiver.id = :senderId)) " +
+            "AND m.hotel.id = :hotelId " + // Hàm cũ yêu cầu hotelId
+            "ORDER BY m.sentAt ASC")
+    List<ChatMessage> findChatHistoryWithHotel(
+            @Param("senderId") int senderId,
+            @Param("receiverId") int receiverId,
+            @Param("hotelId") int hotelId
+    );
+
     @Query("SELECT m FROM ChatMessage m " +
             "WHERE m.id IN (" +
             "  SELECT MAX(m2.id) FROM ChatMessage m2 " +

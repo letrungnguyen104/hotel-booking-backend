@@ -48,6 +48,9 @@ public class SecurityConfig {
                                 .requestMatchers("/ws/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/promotions").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/promotions/featured").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/reviews/hotel/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/presence/online-users").permitAll()
+                                .requestMatchers("/reports/admin/**").hasAuthority("ROLE_ADMIN")
                                 .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->

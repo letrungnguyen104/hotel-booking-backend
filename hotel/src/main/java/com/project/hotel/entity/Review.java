@@ -26,6 +26,10 @@ public class Review {
     @JoinColumn(name = "hotelId")
     Hotel hotel;
 
+    @OneToOne
+    @JoinColumn(name = "booking_id", unique = true)
+    Booking booking;
+
     @Column(name = "rating")
     int rating;
 

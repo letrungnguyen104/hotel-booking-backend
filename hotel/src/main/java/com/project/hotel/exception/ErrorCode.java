@@ -39,6 +39,9 @@ public enum ErrorCode {
     INVALID_CHECKIN_DATE(1029, "Invalid check in date!", HttpStatus.BAD_REQUEST),
     PROMOTION_NOT_FOUND(1029, "Promotion not found!", HttpStatus.BAD_REQUEST),
     PROMOTION_CODE_EXISTED(1029, "Promotion code existed!", HttpStatus.BAD_REQUEST),
+    BOOKING_NOT_COMPLETED(1030, "Booking not completed!", HttpStatus.BAD_REQUEST),
+    REVIEW_ALREADY_EXISTS(1031, "Review already existed!", HttpStatus.BAD_REQUEST),
+    REPORT_NOT_FOUND(1031, "Report not foune!", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

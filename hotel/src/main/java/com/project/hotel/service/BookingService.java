@@ -389,6 +389,7 @@ public class BookingService {
                 .discountAmount(booking.getDiscountAmount())
                 .rooms(roomDetails)
                 .services(serviceDetails)
+                .hasReview(booking.getReview() != null)
                 .build();
     }
     private String loadRoomTypeName(Room room) {
