@@ -287,8 +287,8 @@ public class HotelService {
                 .build();
     }
 
-    public List<HotelSearchResponse> searchHotels(String address, int guests, LocalDate checkIn, LocalDate checkOut) {
-        List<Object[]> results = hotelRepository.searchHotels(address, guests, checkIn, checkOut);
+    public List<HotelSearchResponse> searchHotels(String city, int guests, LocalDate checkIn, LocalDate checkOut) {
+        List<Object[]> results = hotelRepository.searchHotels(city, guests, checkIn, checkOut);
         return results.stream().map(row -> HotelSearchResponse.builder()
                 .id((Integer) row[0])
                 .address((String) row[1])

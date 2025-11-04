@@ -98,13 +98,13 @@ public class HotelController {
 
     @GetMapping("/search")
     public ApiResponse<List<HotelSearchResponse>> searchHotels(
-            @RequestParam String address,
+            @RequestParam String city,
             @RequestParam int guests,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut
     ) {
         return ApiResponse.<List<HotelSearchResponse>>builder()
-                .result(hotelService.searchHotels(address, guests, checkIn, checkOut))
+                .result(hotelService.searchHotels(city, guests, checkIn, checkOut))
                 .build();
     }
 
