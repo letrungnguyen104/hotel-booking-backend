@@ -284,7 +284,6 @@ public class BookingService {
             bookings = bookingRepository.findByHotelOwnerIdWithDetails(hotelAdmin.getId());
         }
 
-        // Map thủ công
         List<BookingDetailResponse> responses = new ArrayList<>();
         for (Booking booking : bookings) {
             responses.add(mapToBookingDetailResponse(booking));
