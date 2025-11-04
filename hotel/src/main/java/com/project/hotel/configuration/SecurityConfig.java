@@ -42,7 +42,7 @@ public class SecurityConfig {
                         request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/hotels/search", "/hotels/top-hotels", "/hotels/get-by-id/**", "/hotels/top-hotels/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/room-type/hotel/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/service/hotel/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/services/hotel/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/uploads/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/bookings/vnpay-return").permitAll()
                                 .requestMatchers("/ws/**").permitAll()

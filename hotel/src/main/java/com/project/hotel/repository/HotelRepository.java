@@ -90,7 +90,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
         hotel h
     LEFT JOIN review r ON h.id = r.hotel_id
     WHERE
-        h.address LIKE '%' + ISNULL(:address, '') + '%'
+        h.city LIKE '%' + ISNULL(:city, '') + '%'
         AND EXISTS (
             SELECT 1
             FROM room_type rt
@@ -108,7 +108,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
         h.id, h.address, h.name, h.city, h.country
     """, nativeQuery = true)
     List<Object[]> searchHotels(
-            @Param("address") String address,
+            @Param("city") String city,
             @Param("guests") int guests,
             @Param("checkIn") LocalDate checkIn,
             @Param("checkOut") LocalDate checkOut
