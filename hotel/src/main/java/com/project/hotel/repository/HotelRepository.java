@@ -90,7 +90,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
         hotel h
     LEFT JOIN review r ON h.id = r.hotel_id
     WHERE
-        h.address LIKE %:address%
+        h.address LIKE '%' + ISNULL(:address, '') + '%'
         AND EXISTS (
             SELECT 1
             FROM room_type rt

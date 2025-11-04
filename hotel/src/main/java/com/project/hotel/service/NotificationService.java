@@ -69,11 +69,21 @@ public class NotificationService {
     public void notifyPaymentSuccess(Booking booking) {
         String title = "Payment Successful!";
         String message = String.format(
-                "Your payment for booking #%d at '%s' was successful. The hotel is reviewing your booking.",
+                "Your payment for booking #%d at '%s' was successful. The hotel will confirm your booking soon.",
                 booking.getId(),
                 booking.getHotel().getName()
         );
         createAndSaveNotification(booking.getUser(), title, message, "PAYMENT_SUCCESS");
+    }
+
+    public void notifyPaymentFailed(Booking booking) {
+        String title = "Payment Failed";
+        String message = String.format(
+                "Your payment for booking #%d at '%s' failed or was cancelled.",
+                booking.getId(),
+                booking.getHotel().getName()
+        );
+        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CANCELLED");
     }
 
     public void notifyBookingConfirmed(Booking booking) {

@@ -41,7 +41,9 @@ public enum ErrorCode {
     PROMOTION_CODE_EXISTED(1029, "Promotion code existed!", HttpStatus.BAD_REQUEST),
     BOOKING_NOT_COMPLETED(1030, "Booking not completed!", HttpStatus.BAD_REQUEST),
     REVIEW_ALREADY_EXISTS(1031, "Review already existed!", HttpStatus.BAD_REQUEST),
-    REPORT_NOT_FOUND(1031, "Report not foune!", HttpStatus.NOT_FOUND),
+    REPORT_NOT_FOUND(1032, "Report not foune!", HttpStatus.NOT_FOUND),
+    INVALID_SIGNATURE(1033, "Invalid signature!", HttpStatus.NOT_FOUND),
+    PAYMENT_NOT_FOUND(1034, "Payment not found!", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

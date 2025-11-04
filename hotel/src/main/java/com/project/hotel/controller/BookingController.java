@@ -7,10 +7,14 @@ import com.project.hotel.dto.response.ApiResponse;
 import com.project.hotel.dto.response.BookingDetailResponse;
 import com.project.hotel.dto.response.CreatePaymentResponse;
 import com.project.hotel.dto.response.DashboardDataResponse;
+import com.project.hotel.service.BookingProcessingService;
 import com.project.hotel.service.BookingService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,10 +27,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/bookings")
 @RequiredArgsConstructor
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookingController {
 
-    private final BookingService bookingService;
-    // TODO: Bạn cần tạo BookingProcessingService để xử lý logic vnpay-return
+    BookingService bookingService;
+    BookingProcessingService bookingProcessingService;
 
     @PostMapping("/create-payment")
     @PreAuthorize("isAuthenticated()")
@@ -42,24 +48,23 @@ public class BookingController {
     public ResponseEntity<Void> vnpayReturn(
             @RequestParam Map<String, String> allParams
     ) throws IOException {
-
-        // TODO: Xử lý xác thực chữ ký VNPAY ở đây.
-        // Đây là một bước CỰC KỲ QUAN TRỌNG.
+        log.info("VNPAY Return call received with params: {}", allParams);
+        bookingProcessingService.verifySignature(allParams);
 
         String vnp_ResponseCode = allParams.get("vnp_ResponseCode");
         String bookingId = allParams.get("vnp_TxnRef");
+        String transactionNo = allParams.get("vnp_TransactionNo");
 
         String frontendRedirectUrl;
 
         if ("00".equals(vnp_ResponseCode)) {
-            // TODO: Gọi service để cập nhật DB
-            // bookingProcessingService.confirmPayment(bookingId, allParams);
+            bookingProcessingService.confirmPayment(bookingId, transactionNo);
             frontendRedirectUrl = "http://localhost:5173/booking-success";
         } else {
-            // TODO: Gọi service để cập nhật DB là FAILED
-            // bookingProcessingService.failPayment(bookingId, allParams);
+            bookingProcessingService.failPayment(bookingId, transactionNo);
             frontendRedirectUrl = "http://localhost:5173/booking-failure";
         }
+
         return ResponseEntity.status(302).header("Location", frontendRedirectUrl).build();
     }
 
