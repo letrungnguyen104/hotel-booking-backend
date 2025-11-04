@@ -1,5 +1,6 @@
 package com.project.hotel.repository;
 
+import com.project.hotel.dto.response.AdminDashboardDataResponse;
 import com.project.hotel.entity.Hotel;
 import com.project.hotel.enums.HotelStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -152,5 +153,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
     GROUP BY h
     """)
     List<Object[]> findByOwnerIdAndStatus(@Param("ownerId") int ownerId, @Param("status") HotelStatus status);
+
+    @Query("SELECT new com.project.hotel.dto.response.AdminDashboardDataResponse$SimpleHotelInfo(h.id, h.name, h.owner.username, h.status) " +
+            "FROM Hotel h ORDER BY h.createdAt DESC")
+    List<AdminDashboardDataResponse.SimpleHotelInfo> getSimpleHotelInfo();
 
 }
