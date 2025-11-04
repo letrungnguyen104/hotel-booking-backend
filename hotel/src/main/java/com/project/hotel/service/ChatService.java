@@ -164,7 +164,6 @@ public class ChatService {
         }).collect(Collectors.toList());
     }
 
-    // (Hàm này có thể bị thiếu từ file BookingService, tôi thêm lại vào đây)
     private String loadRoomTypeName(Room room) {
         RoomType rt = roomTypeRepository.findById(room.getRoomType().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));

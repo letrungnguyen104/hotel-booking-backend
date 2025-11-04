@@ -7,6 +7,7 @@ import com.project.hotel.dto.request.CancelBookingRequest;
 import com.project.hotel.dto.request.ValidatePromotionRequest;
 import com.project.hotel.dto.response.BookingDetailResponse;
 import com.project.hotel.dto.response.CreatePaymentResponse;
+import com.project.hotel.dto.response.DashboardDataResponse;
 import com.project.hotel.dto.response.ValidatePromotionResponse;
 import com.project.hotel.entity.*;
         import com.project.hotel.enums.BookingStatus;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
         import java.util.stream.Collectors;
 
@@ -341,6 +343,19 @@ public class BookingService {
         booking.setStatus(BookingStatus.COMPLETED);
         bookingRepository.save(booking);
         return mapToBookingDetailResponse(booking);
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
+    public List<DashboardDataResponse> getDashboardData(LocalDate startDate, LocalDate endDate) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User hotelAdmin = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+        return bookingRepository.findDashboardData(hotelAdmin.getId(), startDateTime, endDateTime);
     }
 
     private BookingDetailResponse mapToBookingDetailResponse(Booking booking) {

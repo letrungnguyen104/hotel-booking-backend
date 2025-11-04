@@ -6,14 +6,17 @@ import com.project.hotel.dto.request.CancelBookingRequest;
 import com.project.hotel.dto.response.ApiResponse;
 import com.project.hotel.dto.response.BookingDetailResponse;
 import com.project.hotel.dto.response.CreatePaymentResponse;
+import com.project.hotel.dto.response.DashboardDataResponse;
 import com.project.hotel.service.BookingService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +61,17 @@ public class BookingController {
             frontendRedirectUrl = "http://localhost:5173/booking-failure";
         }
         return ResponseEntity.status(302).header("Location", frontendRedirectUrl).build();
+    }
+
+    @GetMapping("/hotel-admin/dashboard")
+    @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
+    public ApiResponse<List<DashboardDataResponse>> getDashboardData(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        return ApiResponse.<List<DashboardDataResponse>>builder()
+                .result(bookingService.getDashboardData(startDate, endDate))
+                .build();
     }
 
     @GetMapping("/my-bookings")
