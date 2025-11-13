@@ -44,6 +44,11 @@ public enum ErrorCode {
     REPORT_NOT_FOUND(1032, "Report not foune!", HttpStatus.NOT_FOUND),
     INVALID_SIGNATURE(1033, "Invalid signature!", HttpStatus.NOT_FOUND),
     PAYMENT_NOT_FOUND(1034, "Payment not found!", HttpStatus.NOT_FOUND),
+    INVALID_OTP(1035, "Invalid OTP code!", HttpStatus.BAD_REQUEST),
+    OTP_EXPIRED(1036, "OTP code has expired!", HttpStatus.BAD_REQUEST),
+    OTP_ALREADY_USED(1037, "OTP code has already been used!", HttpStatus.BAD_REQUEST),
+    EMAIL_SEND_FAILED(1038, "Failed to send email!", HttpStatus.INTERNAL_SERVER_ERROR),
+    USER_NOT_FOUND(1039, "User not found with this email!", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
