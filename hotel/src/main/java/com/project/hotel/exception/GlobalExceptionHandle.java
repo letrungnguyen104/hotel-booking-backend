@@ -1,6 +1,7 @@
 package com.project.hotel.exception;
 
 import com.project.hotel.dto.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,10 +9,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandle {
 
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse> handlingException(Exception exception){
+        log.error("Unhandled Exception caught in GlobalExceptionHandle: ", exception);
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(ErrorCode.UNCATEGORIED_EXCEPTION.getCode());
         apiResponse.setMessage(ErrorCode.UNCATEGORIED_EXCEPTION.getMessage());

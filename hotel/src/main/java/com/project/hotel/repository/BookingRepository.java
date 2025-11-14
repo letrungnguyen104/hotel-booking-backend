@@ -89,4 +89,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             Pageable pageable
     );
 
+    @Query("SELECT b FROM Booking b " +
+            "LEFT JOIN FETCH b.bookingRooms br " +
+            "LEFT JOIN FETCH br.room r " +
+            "LEFT JOIN FETCH r.roomType rt " +
+            "WHERE b.id = :bookingId")
+    Optional<Booking> findByIdWithRooms(@Param("bookingId") Integer bookingId);
+
 }

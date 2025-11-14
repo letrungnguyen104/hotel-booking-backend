@@ -1,4 +1,3 @@
-// src/main/java/com/project/hotel/service/NotificationService.java
 package com.project.hotel.service;
 
 import com.project.hotel.dto.request.CreateNotificationRequest;
@@ -30,25 +29,25 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final NotificationMapper notificationMapper;
 
-    // Hàm nội bộ để tạo và lưu thông báo
-    private void createAndSaveNotification(User user, String title, String message, String type) {
+    private void createAndSaveNotification(User user, String title, String message, NotificationType type, String link) {
         Notification notification = Notification.builder()
                 .user(user)
                 .title(title)
                 .message(message)
-                .type(NotificationType.valueOf(type))
+                .type(type)
+                .link(link)
                 .status(NotificationStatus.UNREAD)
                 .createdAt(LocalDateTime.now())
                 .build();
         notificationRepository.save(notification);
     }
 
-    // --- Hàm cho Admin gửi thông báo tùy chỉnh ---
     public NotificationResponse createNotification(CreateNotificationRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        createAndSaveNotification(user, request.getTitle(), request.getMessage(),
+                NotificationType.valueOf(request.getType()), null);
 
-        createAndSaveNotification(user, request.getTitle(), request.getMessage(), request.getType());
         return NotificationResponse.builder()
                 .title(request.getTitle())
                 .message(request.getMessage())
@@ -60,10 +59,11 @@ public class NotificationService {
         String message = String.format(
                 "You have a new booking (#%d) from user %s for %d night(s).",
                 booking.getId(),
-                booking.getUser().getFullName(), // Lấy tên người dùng
+                booking.getUser().getFullName(),
                 booking.getCheckInDate().until(booking.getCheckOutDate()).getDays()
         );
-        createAndSaveNotification(booking.getHotel().getOwner(), title, message, "NEW_BOOKING");
+        createAndSaveNotification(booking.getHotel().getOwner(), title, message,
+                NotificationType.NEW_BOOKING, "/admin/bookings/" + booking.getId());
     }
 
     public void notifyPaymentSuccess(Booking booking) {
@@ -73,7 +73,8 @@ public class NotificationService {
                 booking.getId(),
                 booking.getHotel().getName()
         );
-        createAndSaveNotification(booking.getUser(), title, message, "PAYMENT_SUCCESS");
+        createAndSaveNotification(booking.getUser(), title, message,
+                NotificationType.PAYMENT_SUCCESS, "/my-bookings");
     }
 
     public void notifyPaymentFailed(Booking booking) {
@@ -83,7 +84,8 @@ public class NotificationService {
                 booking.getId(),
                 booking.getHotel().getName()
         );
-        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CANCELLED");
+        createAndSaveNotification(booking.getUser(), title, message,
+                NotificationType.BOOKING_CANCELLED, "/my-bookings");
     }
 
     public void notifyBookingConfirmed(Booking booking) {
@@ -94,7 +96,8 @@ public class NotificationService {
                 booking.getHotel().getName(),
                 booking.getCheckInDate().toString()
         );
-        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CONFIRMED");
+        createAndSaveNotification(booking.getUser(), title, message,
+                NotificationType.BOOKING_CONFIRMED, "/my-bookings");
     }
 
     public void notifyBookingCancelledByUser(Booking booking) {
@@ -105,7 +108,8 @@ public class NotificationService {
                 booking.getUser().getUsername(),
                 booking.getCancellationReason()
         );
-        createAndSaveNotification(booking.getHotel().getOwner(), title, message, "BOOKING_CANCELLED");
+        createAndSaveNotification(booking.getHotel().getOwner(), title, message,
+                NotificationType.BOOKING_CANCELLED, "/admin/bookings/" + booking.getId());
     }
 
     public void notifyCancellationRequest(Booking booking) {
@@ -117,7 +121,8 @@ public class NotificationService {
                 booking.getHotel().getName(),
                 booking.getCancellationReason()
         );
-        createAndSaveNotification(booking.getHotel().getOwner(), title, message, "BOOKING_CANCELLED");
+        createAndSaveNotification(booking.getHotel().getOwner(), title, message,
+                NotificationType.BOOKING_CANCELLED, "/admin/bookings/" + booking.getId());
     }
 
     public void notifyCancellationApproved(Booking booking) {
@@ -127,7 +132,8 @@ public class NotificationService {
                 booking.getId(),
                 booking.getHotel().getName()
         );
-        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CANCELLED");
+        createAndSaveNotification(booking.getUser(), title, message,
+                NotificationType.BOOKING_CANCELLED, "/my-bookings");
     }
 
     public void notifyCancellationRejected(Booking booking) {
@@ -137,31 +143,66 @@ public class NotificationService {
                 booking.getId(),
                 booking.getHotel().getName()
         );
-        createAndSaveNotification(booking.getUser(), title, message, "BOOKING_CONFIRMED"); // Dùng lại type CONFIRMED
+        createAndSaveNotification(booking.getUser(), title, message,
+                NotificationType.BOOKING_CONFIRMED, "/my-bookings");
     }
 
     public void notifyHotelApproved(Hotel hotel) {
         String title = "Your hotel has been approved!";
         String message = String.format("Congratulations! Your hotel '%s' has been approved and is now ACTIVE.", hotel.getName());
-        createAndSaveNotification(hotel.getOwner(), title, message, "HOTEL_STATUS");
+        createAndSaveNotification(hotel.getOwner(), title, message,
+                NotificationType.HOTEL_STATUS, "/admin/my-hotel");
     }
 
     public void notifyHotelRejected(Hotel hotel) {
         String title = "Your hotel registration was rejected.";
         String message = String.format("We regret to inform you that your hotel '%s' has been REJECTED. Please check your email for details.", hotel.getName());
-        createAndSaveNotification(hotel.getOwner(), title, message, "HOTEL_STATUS");
+        createAndSaveNotification(hotel.getOwner(), title, message,
+                NotificationType.HOTEL_STATUS, "/admin/my-hotel");
     }
 
     public void notifyHotelBanned(Hotel hotel) {
         String title = "Your hotel has been banned.";
         String message = String.format("Your hotel '%s' has been set to CLOSED by an administrator.", hotel.getName());
-        createAndSaveNotification(hotel.getOwner(), title, message, "HOTEL_STATUS");
+        createAndSaveNotification(hotel.getOwner(), title, message,
+                NotificationType.HOTEL_STATUS, "/admin/my-hotel");
     }
 
     public void notifyHotelUnbanned(Hotel hotel) {
         String title = "Your hotel has been reactivated.";
         String message = String.format("Your hotel '%s' has been reactivated and is now ACTIVE.", hotel.getName());
-        createAndSaveNotification(hotel.getOwner(), title, message, "HOTEL_STATUS");
+        createAndSaveNotification(hotel.getOwner(), title, message,
+                NotificationType.HOTEL_STATUS, "/admin/my-hotel");
+    }
+
+    public void notifyPaymentReminder(Booking booking) {
+        String title = "Payment Reminder";
+        String message = String.format(
+                "Your booking #%d at %s is awaiting payment.",
+                booking.getId(), booking.getHotel().getName()
+        );
+        createAndSaveNotification(
+                booking.getUser(),
+                title,
+                message,
+                NotificationType.BOOKING_REMINDER,
+                "/my-bookings"
+        );
+    }
+
+    public void notifyBookingExpired(Booking booking) {
+        String title = "Booking Cancelled";
+        String message = String.format(
+                "Unfortunately, your booking #%d at %s has been cancelled due to overdue payment.",
+                booking.getId(), booking.getHotel().getName()
+        );
+        createAndSaveNotification(
+                booking.getUser(),
+                title,
+                message,
+                NotificationType.BOOKING_EXPIRED,
+                "/my-bookings"
+        );
     }
 
     public List<NotificationResponse> getMyNotifications() {
@@ -200,7 +241,7 @@ public class NotificationService {
                 .findByUser_IdAndStatus(user.getId(), NotificationStatus.UNREAD);
 
         if (unreadNotifications.isEmpty()) {
-            return; // Không có gì để làm
+            return;
         }
 
         for (Notification notification : unreadNotifications) {

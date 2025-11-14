@@ -40,4 +40,7 @@ public class Notification {
 
     @Column(name = "createdAt")
     LocalDateTime createdAt;
+
+    @Column(name = "link")
+    private String link;
 }

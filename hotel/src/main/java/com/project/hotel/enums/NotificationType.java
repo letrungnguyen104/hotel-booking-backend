@@ -9,5 +9,7 @@ public enum NotificationType {
     BOOKING_CHECKIN,
     BOOKING_CHECKOUT,
     PAYMENT_SUCCESS,
-    SYSTEM
+    SYSTEM,
+    BOOKING_REMINDER,
+    BOOKING_EXPIRED
 }

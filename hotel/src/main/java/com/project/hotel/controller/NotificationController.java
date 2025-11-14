@@ -1,4 +1,3 @@
-// src/main/java/com/project/hotel/controller/NotificationController.java
 package com.project.hotel.controller;
 
 import com.project.hotel.dto.request.CreateNotificationRequest;

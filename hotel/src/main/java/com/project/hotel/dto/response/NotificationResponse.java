@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NotificationResponse {
-    private int id;
-    private String title;
-    private String message;
-    private String type;
-    private String status;
-    private LocalDateTime createdAt;
+    int id;
+    String title;
+    String message;
+    String type;
+    String status;
+    LocalDateTime createdAt;
+    String link;
 }

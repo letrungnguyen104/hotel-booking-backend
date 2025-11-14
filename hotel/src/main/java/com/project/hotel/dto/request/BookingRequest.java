@@ -15,7 +15,7 @@ public class BookingRequest {
     Integer hotelId;
     LocalDate checkInDate;
     LocalDate checkOutDate;
-    Double totalPrice;
+//    Double totalPrice;
     String promotionCode;
     List<RoomBookingDetail> roomsToBook;
     CustomerInfo customerInfo;
