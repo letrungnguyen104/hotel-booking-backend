@@ -1,4 +1,3 @@
-// src/main/java/com/project/hotel/service/BookingService.java
 package com.project.hotel.service;
 
 import com.project.hotel.configuration.VNPAYConfig;
@@ -10,19 +9,20 @@ import com.project.hotel.dto.response.CreatePaymentResponse;
 import com.project.hotel.dto.response.DashboardDataResponse;
 import com.project.hotel.dto.response.ValidatePromotionResponse;
 import com.project.hotel.entity.*;
-        import com.project.hotel.enums.BookingStatus;
+import com.project.hotel.enums.BookingStatus;
 import com.project.hotel.enums.PaymentMethod;
 import com.project.hotel.enums.PaymentStatus;
 import com.project.hotel.exception.AppException;
 import com.project.hotel.exception.ErrorCode;
 import com.project.hotel.repository.*;
-        import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-        import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +55,7 @@ public class BookingService {
     final HotelImageRepository hotelImageRepo;
     final NotificationService notificationService;
     final PromotionService promotionService;
+    final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${vnpay.tmn-code}") private String tmnCode;
     @Value("${vnpay.hash-secret}") private String hashSecret;
@@ -68,6 +70,25 @@ public class BookingService {
 
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND));
+
+        BookingRequest.CustomerInfo customerInfo = request.getCustomerInfo();
+        boolean userModified = false;
+        if (customerInfo != null) {
+            log.info("Updating user info from checkout form for user: {}", username);
+            if (customerInfo.getFullName() != null && !customerInfo.getFullName().equals(user.getFullName())) {
+                user.setFullName(customerInfo.getFullName());
+                userModified = true;
+            }
+            if (customerInfo.getPhoneNumber() != null && !customerInfo.getPhoneNumber().equals(user.getPhoneNumber())) {
+                user.setPhoneNumber(customerInfo.getPhoneNumber());
+                userModified = true;
+            }
+
+            if (userModified) {
+                userRepository.save(user);
+            }
+        }
+
         double calculatedRoomTotal = 0;
         double calculatedServiceTotal = 0;
         long totalNights = request.getCheckInDate().until(request.getCheckOutDate()).getDays();
@@ -118,9 +139,11 @@ public class BookingService {
         Booking savedBooking = bookingRepository.save(booking);
 
         for (BookingRequest.RoomBookingDetail roomDetail : request.getRoomsToBook()) {
-            List<Room> availableRooms = roomRepository.findAvailableRoomsByRoomTypeAndDate(
+            List<Room> availableRooms = roomRepository.findAvailableRooms(
                     roomDetail.getRoomTypeId(),
-                    request.getCheckInDate(), request.getCheckOutDate(),
+                    request.getCheckInDate(),
+                    request.getCheckOutDate(),
+                    null,
                     PageRequest.of(0, roomDetail.getQuantity())
             );
             if (availableRooms.size() < roomDetail.getQuantity()) throw new AppException(ErrorCode.ROOM_NOT_FOUND);
@@ -151,7 +174,28 @@ public class BookingService {
                 .build();
         paymentRepository.save(payment);
 
-        notificationService.notifyNewBooking(savedBooking);
+        try {
+            Integer bookingId = savedBooking.getId();
+            String reminderKey = "booking:remind:" + bookingId;
+            String expiryKey = "booking:expire:" + bookingId;
+
+            log.info("[Redis] Attempting to set keys for Booking ID: {}", bookingId);
+
+            redisTemplate.opsForValue().set(reminderKey, String.valueOf(bookingId), 30, TimeUnit.SECONDS);
+            Long reminderTTL = redisTemplate.getExpire(reminderKey, TimeUnit.SECONDS);
+            log.info("[Redis] VERIFY (24H): Key '{}' set. Current TTL: {} seconds.", reminderKey, reminderTTL);
+
+            redisTemplate.opsForValue().set(expiryKey, String.valueOf(bookingId), 60, TimeUnit.SECONDS);
+            Long expiryTTL = redisTemplate.getExpire(expiryKey, TimeUnit.SECONDS);
+            log.info("[Redis] VERIFY (48H): Key '{}' set. Current TTL: {} seconds.", expiryKey, expiryTTL);
+
+            if (reminderTTL == null || reminderTTL <= 0 || expiryTTL == null || expiryTTL <= 0) {
+                log.warn("[Redis] WARNING: TTL not set correctly for Booking ID: {}", bookingId);
+            }
+
+        } catch (Exception e) {
+            log.error("[Redis] FAILED to set Redis keys for Booking ID: {}!", savedBooking.getId(), e);
+        }
 
         String orderInfo = "Booking for hotel " + hotel.getId() + " - User: " + user.getId();
         long amountInVND = (long) (finalPrice * 100);
@@ -177,6 +221,92 @@ public class BookingService {
         return CreatePaymentResponse.builder()
                 .status("OK")
                 .message("Booking created, redirecting to payment...")
+                .paymentUrl(paymentUrl)
+                .build();
+    }
+
+    @Transactional
+    public CreatePaymentResponse retryBookingPayment(Integer bookingId, HttpServletRequest httpServletRequest) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Booking booking = bookingRepository.findByIdWithRooms(bookingId)
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
+
+        if (booking.getUser().getId() != user.getId()) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+        if (booking.getStatus() != BookingStatus.PENDING) {
+            throw new AppException(ErrorCode.INVALID_ACTION);
+        }
+
+        Payment payment = paymentRepository.findByBookingId(bookingId)
+                .orElseThrow(() -> new AppException(ErrorCode.PAYMENT_NOT_FOUND));
+
+        boolean allRoomsAvailable = true;
+        String failedRoomType = "";
+
+        List<BookingRoom> bookingRooms = bookingRoomRepository.findByBookingId(bookingId);
+
+        Map<Integer, Integer> roomTypeCounts = bookingRooms.stream()
+                .collect(Collectors.groupingBy(br -> br.getRoom().getRoomType().getId(), Collectors.summingInt(br -> 1)));
+
+        for (Map.Entry<Integer, Integer> entry : roomTypeCounts.entrySet()) {
+            Integer roomTypeId = entry.getKey();
+            Integer quantityNeeded = entry.getValue();
+
+            List<Room> availableRooms = roomRepository.findAvailableRooms(
+                    roomTypeId,
+                    booking.getCheckInDate(),
+                    booking.getCheckOutDate(),
+                    bookingId, // bookingIdToExclude
+                    PageRequest.of(0, quantityNeeded)
+            );
+
+            if (availableRooms.size() < quantityNeeded) {
+                allRoomsAvailable = false; // Đặt cờ
+                failedRoomType = "RoomType ID: " + roomTypeId;
+                break;
+            }
+        }
+
+        if (!allRoomsAvailable) {
+            log.warn("Retry failed for booking {}: {} not available.", bookingId, failedRoomType);
+
+            booking.setStatus(BookingStatus.CANCELLED);
+            booking.setPaymentStatus(PaymentStatus.FAILED);
+            payment.setStatus(PaymentStatus.FAILED);
+            bookingRepository.save(booking);
+            paymentRepository.save(payment);
+
+            throw new AppException(ErrorCode.ROOM_NOT_FOUND);
+        }
+
+        String orderInfo = "Retry Booking for hotel " + booking.getHotel().getId() + " - User: " + user.getId();
+        long amountInVND = (long) (payment.getAmount() * 100);
+
+        Map<String, String> vnp_Params = new TreeMap<>();
+        vnp_Params.put("vnp_Version", "2.1.0");
+        vnp_Params.put("vnp_Command", "pay");
+        vnp_Params.put("vnp_TmnCode", tmnCode);
+        vnp_Params.put("vnp_Amount", String.valueOf(amountInVND));
+        vnp_Params.put("vnp_CurrCode", "VND");
+        vnp_Params.put("vnp_TxnRef", String.valueOf(booking.getId()));
+        vnp_Params.put("vnp_OrderInfo", orderInfo);
+        vnp_Params.put("vnp_OrderType", "other");
+        vnp_Params.put("vnp_Locale", "vn");
+        vnp_Params.put("vnp_ReturnUrl", returnUrl);
+        vnp_Params.put("vnp_IpAddr", VNPAYConfig.getIpAddress(httpServletRequest));
+        vnp_Params.put("vnp_CreateDate", VNPAYConfig.getCurrentDateVNPAY());
+
+        String queryUrl = VNPAYConfig.getQueryString(vnp_Params);
+        String hashData = VNPAYConfig.hmacSHA512(hashSecret, queryUrl);
+        String paymentUrl = vnpayUrl + "?" + queryUrl + "&vnp_SecureHash=" + hashData;
+
+        return CreatePaymentResponse.builder()
+                .status("OK")
+                .message("Retrying payment...")
                 .paymentUrl(paymentUrl)
                 .build();
     }
@@ -239,14 +369,24 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
 
-        if (booking.getStatus() != BookingStatus.CANCELLATION_PENDING) {
+        if (booking.getStatus() == BookingStatus.CANCELLATION_PENDING || booking.getStatus() == BookingStatus.PENDING) {
+            booking.setStatus(BookingStatus.CANCELLED);
+            if (booking.getPaymentStatus() == PaymentStatus.PAID) {
+                booking.setPaymentStatus(PaymentStatus.REFUNDED);
+            } else {
+                booking.setPaymentStatus(PaymentStatus.FAILED);
+            }
+            bookingRepository.save(booking);
+            if(booking.getStatus() == BookingStatus.CANCELLATION_PENDING){
+                notificationService.notifyCancellationApproved(booking);
+            }
+            if(booking.getStatus() == BookingStatus.PENDING) {
+                redisTemplate.delete("booking:remind:" + bookingId);
+                redisTemplate.delete("booking:expire:" + bookingId);
+            }
+        } else {
             throw new AppException(ErrorCode.INVALID_ACTION);
         }
-
-        booking.setStatus(BookingStatus.CANCELLED);
-        booking.setPaymentStatus(PaymentStatus.REFUNDED);
-        bookingRepository.save(booking);
-        notificationService.notifyCancellationApproved(booking);
 
         return mapToBookingDetailResponse(booking);
     }

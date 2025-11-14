@@ -44,6 +44,16 @@ public class BookingController {
                 .build();
     }
 
+    @PostMapping("/retry-payment/{bookingId}")
+    @PreAuthorize("isAuthenticated()")
+    public ApiResponse<CreatePaymentResponse> retryBookingPayment(
+            @PathVariable Integer bookingId,
+            HttpServletRequest httpServletRequest) {
+        return ApiResponse.<CreatePaymentResponse>builder()
+                .result(bookingService.retryBookingPayment(bookingId, httpServletRequest))
+                .build();
+    }
+
     @GetMapping("/vnpay-return")
     public ResponseEntity<Void> vnpayReturn(
             @RequestParam Map<String, String> allParams
