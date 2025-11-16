@@ -39,13 +39,32 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Intege
             @Param("hotelId") int hotelId
     );
 
-    @Query("SELECT m FROM ChatMessage m " +
-            "WHERE m.id IN (" +
-            "  SELECT MAX(m2.id) FROM ChatMessage m2 " +
-            "  WHERE m2.sender.id = :userId OR m2.receiver.id = :userId " +
-            "  GROUP BY CASE WHEN m2.sender.id = :userId THEN m2.receiver.id ELSE m2.sender.id END" +
-            ") ORDER BY m.sentAt DESC")
+    @Query(value = """
+        WITH RankedMessages AS (
+            SELECT *,
+                   ROW_NUMBER() OVER(
+                       PARTITION BY
+                           CASE
+                               WHEN sender_id = :userId THEN receiver_id
+                               ELSE sender_id
+                           END,
+                           ISNULL(hotel_id, -1) -- Phân biệt chat có hotelId và không có
+                       ORDER BY sent_at DESC
+                   ) as rn
+            FROM chat_message
+            WHERE sender_id = :userId OR receiver_id = :userId
+        )
+        SELECT *
+        FROM RankedMessages
+        WHERE rn = 1
+        ORDER BY sent_at DESC
+        """, nativeQuery = true)
     List<ChatMessage> findLastMessageOfEachConversation(@Param("userId") int userId);
+
+    @Query("SELECT m.sender.id, COUNT(m) FROM ChatMessage m " +
+            "WHERE m.receiver.id = :receiverId AND m.status = 'SENT' " +
+            "GROUP BY m.sender.id")
+    List<Object[]> countUnreadMessagesForUser(@Param("receiverId") int receiverId);
 
     long countByReceiver_IdAndStatus(int receiverId, com.project.hotel.enums.MessageStatus status);
     long countBySender_IdAndReceiver_IdAndStatus(int senderId, int receiverId, MessageStatus status);
