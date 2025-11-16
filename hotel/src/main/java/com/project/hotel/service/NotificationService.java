@@ -15,6 +15,7 @@ import com.project.hotel.repository.NotificationRepository;
 import com.project.hotel.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -28,6 +29,8 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final NotificationMapper notificationMapper;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     private void createAndSaveNotification(User user, String title, String message, NotificationType type, String link) {
         Notification notification = Notification.builder()
@@ -39,7 +42,16 @@ public class NotificationService {
                 .status(NotificationStatus.UNREAD)
                 .createdAt(LocalDateTime.now())
                 .build();
-        notificationRepository.save(notification);
+
+        Notification savedNotification = notificationRepository.save(notification);
+
+        NotificationResponse responseDto = notificationMapper.toNotificationResponse(savedNotification);
+
+        messagingTemplate.convertAndSendToUser(
+                user.getUsername(),
+                "/queue/notifications",
+                responseDto
+        );
     }
 
     public NotificationResponse createNotification(CreateNotificationRequest request) {

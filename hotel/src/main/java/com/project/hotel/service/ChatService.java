@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -147,20 +148,62 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ConversationResponse> getConversationsForAdmin(String currentAdminUsername) {
-        List<User> users = userRepository.findByUsernameNot(currentAdminUsername);
+        User adminUser = userRepository.findByUsername(currentAdminUsername)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        return users.stream().map(user -> {
-            // TODO: Bổ sung logic lấy tin nhắn cuối cùng và unreadCount
-            return ConversationResponse.builder()
-                    .conversationPartnerId(user.getId())
-                    .conversationPartnerName(user.getFullName() != null ? user.getFullName() : user.getUsername())
-                    .conversationPartnerUsername(user.getUsername())
-                    .conversationPartnerAvatar(user.getImagePath())
-                    .lastMessage("...")
-                    .timestamp(LocalDateTime.now())
-                    .unreadCount(0)
-                    .hotelId(null)
-                    .build();
+        List<User> allOtherUsers = userRepository.findByUsernameNot(currentAdminUsername);
+
+        List<ChatMessage> lastMessages = chatMessageRepository.findLastMessageOfEachConversation(adminUser.getId());
+
+        Map<Integer, ChatMessage> lastMessageMap = lastMessages.stream()
+                .collect(Collectors.toMap(
+                        msg -> (msg.getSender().getId() == adminUser.getId() ? msg.getReceiver().getId() : msg.getSender().getId()),
+                        msg -> msg,
+                        (existing, replacement) -> existing
+                ));
+
+        Map<Integer, Long> unreadCountMap = chatMessageRepository.countUnreadMessagesForUser(adminUser.getId())
+                .stream()
+                .collect(Collectors.toMap(
+                        row -> (Integer) row[0],
+                        row -> (Long) row[1]
+                ));
+
+        return allOtherUsers.stream().map(user -> {
+
+            ChatMessage lastMsg = lastMessageMap.get(user.getId());
+            long unreadCount = unreadCountMap.getOrDefault(user.getId(), 0L);
+
+            if (lastMsg == null) {
+                return ConversationResponse.builder()
+                        .conversationPartnerId(user.getId())
+                        .conversationPartnerName(user.getFullName() != null ? user.getFullName() : user.getUsername())
+                        .conversationPartnerUsername(user.getUsername())
+                        .conversationPartnerAvatar(user.getImagePath())
+                        .lastMessage("--") // Tin nhắn rỗng
+                        .timestamp(null) // Không có thời gian
+                        .unreadCount(0L)
+                        .hotelId(null)
+                        .build();
+            } else {
+                boolean isSender = (lastMsg.getSender().getId() == adminUser.getId());
+                Integer hotelId = (lastMsg.getHotel() != null) ? lastMsg.getHotel().getId() : null;
+                String hotelName = (lastMsg.getHotel() != null) ? lastMsg.getHotel().getName() : null;
+
+                return ConversationResponse.builder()
+                        .conversationPartnerId(user.getId())
+                        .conversationPartnerName(user.getFullName() != null ? user.getFullName() : user.getUsername())
+                        .conversationPartnerUsername(user.getUsername())
+                        .conversationPartnerAvatar(user.getImagePath())
+                        .lastMessage(isSender ? "Bạn: " + lastMsg.getMessage() : lastMsg.getMessage())
+                        .lastMessageSender(isSender ? "me" : "other")
+                        .timestamp(lastMsg.getSentAt())
+                        .unreadCount(unreadCount)
+                        .lastMessageStatus(lastMsg.getStatus().toString())
+                        .hotelId(hotelId)
+                        .hotelName(hotelName)
+                        .build();
+            }
         }).collect(Collectors.toList());
     }
 

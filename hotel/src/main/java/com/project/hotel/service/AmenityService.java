@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,12 @@ public class AmenityService {
     AmenityMapper amenityMapper;
 
     public AmenityResponse createAmenity(CreateAmenityRequest request) {
+        Optional<Amenity> existingAmenity = amenityRepository.findByName(request.getName());
+
+        if (existingAmenity.isPresent()) {
+            return amenityMapper.toAmenityResponse(existingAmenity.get());
+        }
+
         Amenity amenity = amenityMapper.toAmenity(request);
         Amenity saved = amenityRepository.save(amenity);
         return amenityMapper.toAmenityResponse(saved);

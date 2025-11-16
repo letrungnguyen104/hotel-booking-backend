@@ -7,6 +7,7 @@ import com.project.hotel.service.AmenityService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class AmenityController {
 
     AmenityService amenityService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'HOTEL_ADMIN')")
     @PostMapping
     public ApiResponse<AmenityResponse> createAmenity(@RequestBody CreateAmenityRequest request) {
         return ApiResponse.<AmenityResponse>builder()
@@ -26,6 +28,7 @@ public class AmenityController {
                 .build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'HOTEL_ADMIN')")
     @GetMapping
     public ApiResponse<List<AmenityResponse>> getAllAmenities() {
         return ApiResponse.<List<AmenityResponse>>builder()
