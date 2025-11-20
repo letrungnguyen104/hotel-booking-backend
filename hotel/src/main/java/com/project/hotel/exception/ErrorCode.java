@@ -49,6 +49,7 @@ public enum ErrorCode {
     OTP_ALREADY_USED(1037, "OTP code has already been used!", HttpStatus.BAD_REQUEST),
     EMAIL_SEND_FAILED(1038, "Failed to send email!", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_NOT_FOUND(1039, "User not found with this email!", HttpStatus.NOT_FOUND),
+    AMENITY_IN_USE(1040, "Amenity in use!", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

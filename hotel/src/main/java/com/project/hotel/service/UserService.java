@@ -1,5 +1,6 @@
 package com.project.hotel.service;
 
+import com.project.hotel.aspect.LogActivity;
 import com.project.hotel.dto.request.*;
 import com.project.hotel.dto.response.UserResponse;
 import com.project.hotel.entity.Role;
@@ -90,6 +91,7 @@ public class UserService{
         }
     }
 
+    @LogActivity("UPDATE_PROFILE")
     public UserResponse updateMyProfile(UpdateProfileRequest request, MultipartFile file) {
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
@@ -112,6 +114,7 @@ public class UserService{
         return userMapper.toUserResponse(updatedUser);
     }
 
+    @LogActivity("CHANGE_PASSWORD")
     public void changeMyPassword(ChangePasswordRequest request) {
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)

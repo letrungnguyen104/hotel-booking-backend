@@ -1,6 +1,7 @@
 package com.project.hotel.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.hotel.aspect.LogActivity;
 import com.project.hotel.dto.request.CreateRoomTypeRequest;
 import com.project.hotel.dto.request.UpdateRoomTypeRequest;
 import com.project.hotel.dto.response.AmenityResponse;
@@ -34,6 +35,7 @@ public class RoomTypeService {
     RoomTypeImageRepository roomTypeImageRepository;
     FileStorageService fileStorageService;
 
+    @LogActivity("CREATE_ROOM_TYPE")
     @Transactional
     public RoomTypeResponse createRoomType(CreateRoomTypeRequest request, List<MultipartFile> files) {
         Hotel hotel = hotelRepository.findById(request.getHotelId())
@@ -180,7 +182,7 @@ public class RoomTypeService {
                 .toList();
     }
 
-
+    @LogActivity("UPDATE_ROOM_TYPE")
     @Transactional
     public RoomTypeResponse updateRoomType(
             int id,
@@ -262,6 +264,7 @@ public class RoomTypeService {
                 .build();
     }
 
+    @LogActivity("DELETE_ROOM_TYPE")
     @Transactional
     public void deleteRoomType(int id) {
         RoomType roomType = roomTypeRepository.findById(id)

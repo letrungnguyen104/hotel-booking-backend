@@ -1,5 +1,6 @@
 package com.project.hotel.service;
 
+import com.project.hotel.aspect.LogActivity;
 import com.project.hotel.configuration.VNPAYConfig;
 import com.project.hotel.dto.request.BookingRequest;
 import com.project.hotel.dto.request.CancelBookingRequest;
@@ -62,6 +63,7 @@ public class BookingService {
     @Value("${vnpay.url}") private String vnpayUrl;
     @Value("${vnpay.return-url}") private String returnUrl;
 
+    @LogActivity("CREATE_BOOKING")
     @Transactional
     public CreatePaymentResponse createBookingAndPayment(BookingRequest request, HttpServletRequest httpServletRequest) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -225,6 +227,7 @@ public class BookingService {
                 .build();
     }
 
+    @LogActivity("RETRY_BOOKING")
     @Transactional
     public CreatePaymentResponse retryBookingPayment(Integer bookingId, HttpServletRequest httpServletRequest) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -342,6 +345,7 @@ public class BookingService {
         return responses;
     }
 
+    @LogActivity("CANCEL_BOOKING")
     @Transactional
     public void cancelBooking(Integer bookingId, CancelBookingRequest request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -363,6 +367,7 @@ public class BookingService {
         notificationService.notifyCancellationRequest(booking);
     }
 
+    @LogActivity("APPROVE_CANCELLATION_BOOKING")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
     public BookingDetailResponse approveCancellation(Integer bookingId) {
@@ -391,6 +396,7 @@ public class BookingService {
         return mapToBookingDetailResponse(booking);
     }
 
+    @LogActivity("REJECT_CANCELLATION_BOOKING")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
     public BookingDetailResponse rejectCancellation(Integer bookingId) {
@@ -401,8 +407,8 @@ public class BookingService {
             throw new AppException(ErrorCode.INVALID_ACTION);
         }
         booking.setStatus(BookingStatus.CONFIRMED);
-        // Lý do hủy vẫn được giữ lại để tham khảo
-        // booking.setCancellationReason(null); // (Tùy chọn)
+        // Lý do hủy
+        // booking.setCancellationReason(null);
         bookingRepository.save(booking);
         notificationService.notifyCancellationRejected(booking);
 
@@ -433,6 +439,7 @@ public class BookingService {
         return responses;
     }
 
+    @LogActivity("CONFIRM_BOOKING")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
     public BookingDetailResponse confirmBooking(Integer bookingId) {
@@ -450,6 +457,7 @@ public class BookingService {
         return mapToBookingDetailResponse(booking);
     }
 
+    @LogActivity("CHECK_IN")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
     public BookingDetailResponse checkInBooking(Integer bookingId) {
@@ -469,6 +477,7 @@ public class BookingService {
         return mapToBookingDetailResponse(booking);
     }
 
+    @LogActivity("CHECK_OUT")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_HOTEL_ADMIN')")
     public BookingDetailResponse checkOutBooking(Integer bookingId) {

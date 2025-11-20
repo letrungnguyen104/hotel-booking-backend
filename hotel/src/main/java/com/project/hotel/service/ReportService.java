@@ -1,5 +1,6 @@
 package com.project.hotel.service;
 
+import com.project.hotel.aspect.LogActivity;
 import com.project.hotel.dto.request.CreateNotificationRequest;
 import com.project.hotel.dto.request.CreateReportRequest;
 import com.project.hotel.dto.response.ReportResponse;
@@ -35,6 +36,7 @@ public class ReportService {
     HotelRepository hotelRepository;
     NotificationService notificationService;
 
+    @LogActivity("CREATE_REPORT")
     @Transactional
     @PreAuthorize("isAuthenticated()")
     public void createReport(CreateReportRequest request) {
@@ -91,6 +93,7 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
+    @LogActivity("UPDATE_REPORT")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ReportResponse updateReportStatus(Integer reportId, String status) {

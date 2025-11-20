@@ -1,5 +1,6 @@
 package com.project.hotel.service;
 
+import com.project.hotel.aspect.LogActivity;
 import com.project.hotel.dto.request.CreateHotelRequest;
 import com.project.hotel.dto.request.UpdateHotelRequest;
 import com.project.hotel.dto.response.HotelResponse;
@@ -44,6 +45,7 @@ public class HotelService {
     ReviewRepository reviewRepository;
     NotificationService notificationService;
 
+    @LogActivity("CREATE_HOTEL")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public HotelResponse createHotel(CreateHotelRequest request, List<MultipartFile> files) {
         System.out.println(request.getOwnerId());
@@ -119,6 +121,7 @@ public class HotelService {
         return responses;
     }
 
+    @LogActivity("UPDATE_HOTEL")
     @Transactional
     public HotelResponse updateHotel(
             int id,
@@ -212,6 +215,7 @@ public class HotelService {
         return mapToResponse(hotel, imageUrls);
     }
 
+    @LogActivity("UPDATE_HOTEL")
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public HotelResponse patchHotel(int id, UpdateHotelRequest request, List<MultipartFile> files) {
@@ -258,6 +262,7 @@ public class HotelService {
         return mapToResponse(hotel, imageUrls);
     }
 
+    @LogActivity("DELETE_HOTEL")
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HOTEL_ADMIN')")
     public void deleteHotel(int id) {
@@ -373,6 +378,7 @@ public class HotelService {
                 .build();
     }
 
+    @LogActivity("APPROVE_HOTEL")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public HotelResponse approveHotel(int id) {
@@ -387,6 +393,7 @@ public class HotelService {
         return mapToResponse(hotel, getHotelImageUrls(hotel));
     }
 
+    @LogActivity("REJECT_HOTEL")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public HotelResponse rejectHotel(int id) {
@@ -401,6 +408,7 @@ public class HotelService {
         return mapToResponse(hotel, getHotelImageUrls(hotel));
     }
 
+    @LogActivity("BAN_HOTEL")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public HotelResponse banHotel(int id) {
@@ -415,6 +423,7 @@ public class HotelService {
         return mapToResponse(hotel, getHotelImageUrls(hotel));
     }
 
+    @LogActivity("UNBAN_HOTEL")
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public HotelResponse unbanHotel(int id) {
