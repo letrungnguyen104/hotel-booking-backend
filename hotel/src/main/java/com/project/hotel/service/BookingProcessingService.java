@@ -35,6 +35,7 @@ public class BookingProcessingService {
     NotificationService notificationService;
     RedisTemplate<String, Object> redisTemplate;
     EmailService emailService;
+    WalletService walletService;
 
     @Value("${vnpay.hash-secret}")
     @NonFinal
@@ -83,6 +84,9 @@ public class BookingProcessingService {
 
             bookingRepository.save(booking);
             paymentRepository.save(payment);
+
+            User hotelOwner = booking.getHotel().getOwner();
+            walletService.creditWallet(hotelOwner, booking.getTotalPrice());
 
             notificationService.notifyPaymentSuccess(booking);
             notificationService.notifyNewBooking(booking);

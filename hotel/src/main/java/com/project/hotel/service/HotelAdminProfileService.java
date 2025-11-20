@@ -34,6 +34,7 @@ public class HotelAdminProfileService {
     UserRepository userRepository;
     UserMapper userMapper;
     RoleRepository roleRepository;
+    WalletService walletService;
 
     public HotelAdminResponse createHotelAdmin(CreateHotelAdminRequest request) {
         HotelAdminProfile hotelAdminProfile = hotelAdminProfileMapper.toHotelAdminProfile(request);
@@ -54,6 +55,7 @@ public class HotelAdminProfileService {
         Role hotelAdminRole = roleRepository.findById("HOTEL_ADMIN")
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         owner.getRoles().add(hotelAdminRole);
+        walletService.createWallet(owner);
         userRepository.save(owner);
         hotelAdminProfileRepository.save(profile);
         return hotelAdminProfileMapper.toHotelAdminResponse(profile);
