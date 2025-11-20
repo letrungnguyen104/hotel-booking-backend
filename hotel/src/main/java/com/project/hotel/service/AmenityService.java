@@ -1,5 +1,6 @@
 package com.project.hotel.service;
 
+import com.project.hotel.aspect.LogActivity;
 import com.project.hotel.dto.request.CreateAmenityRequest;
 import com.project.hotel.dto.response.AmenityResponse;
 import com.project.hotel.entity.Amenity;
@@ -7,6 +8,8 @@ import com.project.hotel.exception.AppException;
 import com.project.hotel.exception.ErrorCode;
 import com.project.hotel.mapper.AmenityMapper;
 import com.project.hotel.repository.AmenityRepository;
+import com.project.hotel.repository.RoomTypeRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +26,9 @@ public class AmenityService {
 
     AmenityRepository amenityRepository;
     AmenityMapper amenityMapper;
+    RoomTypeRepository roomTypeRepository;
 
+    @LogActivity("CREATE_AMENITY")
     public AmenityResponse createAmenity(CreateAmenityRequest request) {
         Optional<Amenity> existingAmenity = amenityRepository.findByName(request.getName());
 
@@ -49,6 +54,7 @@ public class AmenityService {
         return amenityMapper.toAmenityResponse(amenity);
     }
 
+    @LogActivity("UPDATE_AMENITY")
     public AmenityResponse updateAmenity(int id, CreateAmenityRequest request) {
         Amenity amenity = amenityRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.AMENITY_NOT_FOUND));
@@ -57,10 +63,18 @@ public class AmenityService {
         return amenityMapper.toAmenityResponse(updated);
     }
 
+    @LogActivity("DELETE_AMENITY")
+    @Transactional
     public void deleteAmenity(int id) {
         if (!amenityRepository.existsById(id)) {
             throw new AppException(ErrorCode.AMENITY_NOT_FOUND);
         }
+
+        boolean isInUse = roomTypeRepository.existsByAmenities_Id(id);
+        if (isInUse) {
+            throw new AppException(ErrorCode.AMENITY_IN_USE);
+        }
+
         amenityRepository.deleteById(id);
     }
 }
