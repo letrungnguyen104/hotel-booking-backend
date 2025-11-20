@@ -40,4 +40,13 @@ public class Payment {
 
     @Column(name = "paid_at")
     LocalDateTime paidAt;
+
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
 }
