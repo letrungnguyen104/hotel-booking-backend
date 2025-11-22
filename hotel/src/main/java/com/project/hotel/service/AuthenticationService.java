@@ -95,7 +95,6 @@ public class AuthenticationService {
                 .build();
         //Tạo payload
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
         JWSObject jwsObject = new JWSObject(header, payload);
 
         //Kí Token
